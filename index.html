@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poem Analyzer</title>
+</head>
+<body>
+    <h1>Analyze Your Poem</h1>
+    <form id="poem-form" method="POST">
+        <label for="poem_title">Poem Title:</label><br>
+        <input type="text" id="poem_title" name="poem_title" value="Untitled"><br><br>
+
+        <label for="poem_text">Poem Text:</label><br>
+        <textarea id="poem_text" name="poem_text" rows="10" cols="50"></textarea><br><br>
+
+        <label for="analysis_type">Analysis Type:</label><br>
+        <select id="analysis_type" name="analysis_type">
+            <option value="sentiment">Sentiment</option>
+            <option value="themes">Themes</option>
+            <option value="style">Style</option>
+            <option value="rhyme">Rhyme</option>
+            <option value="meter">Meter</option>
+        </select><br><br>
+
+        <input type="submit" value="Analyze">
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('poem-form').addEventListener('submit', function(event) {
+            event.preventDefault();  // Prevent the form from submitting the traditional way
+
+            let poemTitle = document.getElementById('poem_title').value;
+            let poemText = document.getElementById('poem_text').value;
+            let analysisType = document.getElementById('analysis_type').value;
+
+            fetch('http://127.0.0.1:5000/analyze_poem', {
+                method: 'POST',  // Ensure this is a POST request
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    poem_text: poemText,
+                    poem_title: poemTitle,
+                    analysis_type: analysisType
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.result) {
+                    document.getElementById('result').innerHTML = `<h3>Analysis Result:</h3><p>${data.result}</p>`;
+                } else if (data.error) {
+                    document.getElementById('result').innerHTML = `<h3>Error:</h3><p>${data.error}</p>`;
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
+
