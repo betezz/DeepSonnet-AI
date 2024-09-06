@@ -62,12 +62,6 @@ frozenlist==1.4.1
 fsspec==2024.6.1
 future==1.0.0
 gast==0.5.4
-google-api-core==2.19.1
-google-auth==2.25.2
-google-auth-oauthlib==1.2.0
-google-cloud-speech==2.27.0
-google-pasta==0.2.0
-googleapis-common-protos==1.63.2
 grpcio==1.65.5
 grpcio-status==1.65.5
 h11==0.14.0
