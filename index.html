@@ -37,7 +37,7 @@
             let poemText = document.getElementById('poem_text').value;
             let analysisType = document.getElementById('analysis_type').value;
 
-            fetch('http://127.0.0.1:5000/analyze_poem', {
+            fetch('http://127.0.0.1:5001/analyze_poem', {
                 method: 'POST',  // Ensure this is a POST request
                 headers: {
                     'Content-Type': 'application/json'
@@ -51,7 +51,7 @@
             .then(response => response.json())
             .then(data => {
                 if (data.result) {
-                    document.getElementById('result').innerHTML = `<h3>Analysis Result:</h3><p>${data.result}</p>`;
+                    document.getElementById('result').innerHTML = `<h3>Analysis Result:</h3><p style="white-space: pre-wrap;">${data.result}</p>`;
                 } else if (data.error) {
                     document.getElementById('result').innerHTML = `<h3>Error:</h3><p>${data.error}</p>`;
                 }
