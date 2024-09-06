@@ -3,3 +3,4 @@ Flask_Cors==5.0.0
 nltk==3.9.1
 openai==1.43.1
 python-dotenv==1.0.1
+gunicorn==23.0.0
