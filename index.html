@@ -37,7 +37,7 @@
             let poemText = document.getElementById('poem_text').value;
             let analysisType = document.getElementById('analysis_type').value;
 
-            fetch('http://127.0.0.1:5001/analyze_poem', {
+            fetch('https://poetry-analysis-bot.onrender.com/', {
                 method: 'POST',  // Ensure this is a POST request
                 headers: {
                     'Content-Type': 'application/json'
