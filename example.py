@@ -122,6 +122,7 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
         max_toks = 1000
     else:
         max_toks = 600
+        
     try:
         completion = client.chat.completions.create(
             model="gpt-4o-mini",  # Switch to a more powerful model if available

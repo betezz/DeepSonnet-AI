@@ -4,31 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poem Analyzer</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .result {
+            margin-top: 30px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Analyze Your Poem</h1>
-    <form id="poem-form">
-        <label for="poem_title">Poem Title:</label><br>
-        <input type="text" id="poem_title" name="poem_title" value="Untitled"><br><br>
+    <div class="container">
+        <h1 class="text-center mb-4">Analyze Your Poem</h1>
+        <form id="poem-form">
+            <div class="form-group">
+                <label for="poem_title">Poem Title:</label>
+                <input type="text" id="poem_title" name="poem_title" class="form-control" value="Untitled">
+            </div>
+            <div class="form-group">
+                <label for="poem_text">Poem Text:</label>
+                <textarea id="poem_text" name="poem_text" rows="10" class="form-control"></textarea>
+            </div>
+            <div class="form-group">
+                <label for="analysis_type">Analysis Type:</label>
+                <select id="analysis_type" name="analysis_type" class="form-control">
+                    <option value="sentiment">Sentiment</option>
+                    <option value="themes">Themes</option>
+                    <option value="style">Style</option>
+                    <option value="rhyme">Rhyme</option>
+                    <option value="meter">Meter</option>
+                    <option value="general">General Analysis</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Analyze</button>
+        </form>
 
-        <label for="poem_text">Poem Text:</label><br>
-        <textarea id="poem_text" name="poem_text" rows="10" cols="50"></textarea><br><br>
+        <div id="result" class="result"></div>
+    </div>
 
-        <label for="analysis_type">Analysis Type:</label><br>
-        <select id="analysis_type" name="analysis_type">
-            <option value="sentiment">Sentiment</option>
-            <option value="themes">Themes</option>
-            <option value="style">Style</option>
-            <option value="rhyme">Rhyme</option>
-            <option value="meter">Meter</option>
-            <option value="general">General Analysis</option>
-        </select><br><br>
-
-        <input type="submit" value="Analyze">
-    </form>
-
-    <div id="result"></div>
-
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
     <script>
         document.getElementById('poem-form').addEventListener('submit', function(event) {
             event.preventDefault();  // Prevent the form from submitting the traditional way
@@ -51,9 +72,9 @@
             .then(response => response.json())
             .then(data => {
                 if (data.result) {
-                    document.getElementById('result').innerHTML = `<h3>Analysis Result:</h3><p style="white-space: pre-wrap;">${data.result}</p>`;
+                    document.getElementById('result').innerHTML = `<h3>Analysis Result:</h3><p>${data.result}</p>`;
                 } else if (data.error) {
-                    document.getElementById('result').innerHTML = `<h3>Error:</h3><p>${data.error}</p>`;
+                    document.getElementById('result').innerHTML = `<h3 class="text-danger">Error:</h3><p>${data.error}</p>`;
                 }
             })
             .catch(error => {
