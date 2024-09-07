@@ -1,6 +1,7 @@
 import os
 from flask import Flask, request, jsonify, render_template
 import nltk
+from nltk.corpus import cmudict
 import ssl
 from openai import OpenAI
 from example import initialize_openai_client, analyze_poem  # Import the functions from your example.py
