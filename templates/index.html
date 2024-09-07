@@ -2,13 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Poem Analyzer</title>
 </head>
 <body>
     <h1>Analyze Your Poem</h1>
-    <form id="poem-form" method="POST">
+    <form id="poem-form">
         <label for="poem_title">Poem Title:</label><br>
         <input type="text" id="poem_title" name="poem_title" value="Untitled"><br><br>
 
@@ -37,8 +36,8 @@
             let poemText = document.getElementById('poem_text').value;
             let analysisType = document.getElementById('analysis_type').value;
 
-            fetch('https://poetry-analysis-bot.onrender.com/', {
-                method: 'POST',  // Ensure this is a POST request
+            fetch('/analyze_poem', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
@@ -63,4 +62,3 @@
     </script>
 </body>
 </html>
-

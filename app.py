@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, render_template
 import nltk
 import ssl
 from openai import OpenAI
@@ -13,12 +13,20 @@ try:
     ssl._create_default_https_context = _create_unverified_https_context
 except AttributeError:
     pass
+
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app)
 
 # Initialize the OpenAI client
 client = initialize_openai_client()
+
+@app.route('/')
+def index():
+    """
+    Render the homepage with the poem analysis form.
+    """
+    return render_template('index.html')  # Serve index.html from the templates folder
 
 @app.route('/analyze_poem', methods=['POST'])
 def analyze_poem_endpoint():
@@ -42,6 +50,5 @@ def analyze_poem_endpoint():
         return jsonify({'error': str(e)}), 500
     
 if __name__ == '__main__':
-    import os
     port = int(os.environ.get('PORT', 5001))
     app.run(debug=True, host='0.0.0.0', port=port)
