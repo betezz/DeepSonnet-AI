@@ -1,8 +1,6 @@
 import os
 from openai import OpenAI
-import nltk
 import ssl
-from nltk.sentiment import SentimentIntensityAnalyzer
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -47,14 +45,12 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
 
     # Standardize analysis type to lowercase for consistent comparison
     analysis_type = analysis_type.lower().strip()
-    sia = SentimentIntensityAnalyzer()
-    sentiment_scores = sia.polarity_scores(poem_text)
 
 
     # Map of supported analysis types to system prompts
     prompts = {
-        "sentiment": f"You are a poetry expert. First, identify the primary sentiment in each stanza of the following poem, providing examples from the text. Then, explain how these sentiments contribute to the overall mood of the poem. The sentiment scores of this poem are as follows: {sentiment_scores}. Use this information in your analysis.",
-        "s": f"You are a poetry expert. First, identify the primary sentiment in each stanza of the following poem, providing examples from the text. Then, explain how these sentiments contribute to the overall mood of the poem. The sentiment scores of this poem are as follows: {sentiment_scores}. Use this information in your analysis.",
+        "sentiment": f"You are a poetry expert. First, identify the primary sentiment in each stanza of the following poem, providing examples from the text. Then, explain how these sentiments contribute to the overall mood of the poem.",
+        "s": f"You are a poetry expert. First, identify the primary sentiment in each stanza of the following poem, providing examples from the text. Then, explain how these sentiments contribute to the overall mood of the poem.",
         "themes": "You are a poetry expert. Identify and discuss the main themes of the following poem.",
         "t": "You are a poetry expert. Identify and discuss the main themes of the following poem.",
         "style": "You are a poetry expert. Determine the style or literary movement (e.g., Romanticism, Modernism) of the following poem, providing three reasons for your determination.",
