@@ -49,38 +49,85 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
 
     # Map of supported analysis types to system prompts
     prompts = {
-        "sentiment": f"You are a poetry expert. First, identify the primary sentiment in each stanza of the following poem, providing examples from the text. Then, explain how these sentiments contribute to the overall mood of the poem.",
-        "s": f"You are a poetry expert. First, identify the primary sentiment in each stanza of the following poem, providing examples from the text. Then, explain how these sentiments contribute to the overall mood of the poem.",
-        "themes": "You are a poetry expert. Identify and discuss the main themes of the following poem.",
-        "t": "You are a poetry expert. Identify and discuss the main themes of the following poem.",
-        "style": "You are a poetry expert. Determine the style or literary movement (e.g., Romanticism, Modernism) of the following poem, providing three reasons for your determination.",
-        "st": "You are a poetry expert. Determine the style or literary movement (e.g., Romanticism, Modernism) of the following poem, providing three reasons for your determination.",
-        "r": "You are a poetry expert. Determine if the following poem displays any specific end rhyme schemes (e.g., ABAB, AABB). If it does not display any, just output 'no rhyme scheme detected' .", 
-        "rhyme": "You are a poetry expert. Determine if the following poem displays any specific end rhyme schemes (e.g., ABAB, AABB). If it does not display any, just output 'no rhyme scheme detected' .",
-        "m": "You are a poetry expert. Determine if the following poem displays any specific meter (e.g., iambic pentameter). If it does not display any, just output 'no meter detected' .",
-        "meter": "You are a poetry expert. Determine if the following poem displays any specific meter (e.g., iambic pentameter). If it does not display any, just output 'no meter detected' ."
+        "sentiment": (
+            "You are an expert in poetry analysis. Begin by identifying the primary sentiment or emotion in each stanza of the following poem, "
+            "using specific textual evidence. Then, analyze how these sentiments evolve throughout the poem and contribute to the overall emotional arc and tone. "
+            "Consider any shifts in mood and discuss their potential impact on different readers."
+        ),
+        "s": (
+            "You are an expert in poetry analysis. Begin by identifying the primary sentiment or emotion in each stanza of the following poem, "
+            "using specific textual evidence. Then, analyze how these sentiments evolve throughout the poem and contribute to the overall emotional arc and tone. "
+            "Consider any shifts in mood and discuss their potential impact on different readers."
+        ),
+        "themes": (
+            "You are a seasoned poetry critic. Identify and discuss the primary themes of the following poem, using examples to support your analysis. "
+            "After identifying the central themes, explain how they interrelate and contribute to the poem’s overall meaning. "
+            "Discuss any potential underlying symbolism or secondary themes."
+        ),
+        "t": (
+            "You are a seasoned poetry critic. Identify and discuss the primary themes of the following poem, using examples to support your analysis. "
+            "After identifying the central themes, explain how they interrelate and contribute to the poem’s overall meaning. "
+            "Discuss any potential underlying symbolism or secondary themes."
+        ),
+        "style": (
+            "You are a poetry expert. Based on the language, tone, and structure of the following poem, determine which literary movement or style it belongs to "
+            "(e.g., Romanticism, Modernism, etc.). Provide three specific reasons, with evidence from the poem, to support your determination. "
+            "Analyze how the style influences the poem's themes and tone."
+        ),
+        "st": (
+            "You are a poetry expert. Based on the language, tone, and structure of the following poem, determine which literary movement or style it belongs to "
+            "(e.g., Romanticism, Modernism, etc.). Provide three specific reasons, with evidence from the poem, to support your determination. "
+            "Analyze how the style influences the poem's themes and tone."
+        ),
+        "rhyme": (
+            "You are a poetry expert. Examine the rhyme scheme of the following poem, identifying any specific patterns (e.g., ABAB, AABB). "
+            "If there is no consistent rhyme scheme, analyze whether the absence of rhyme contributes to the poem’s tone or themes. "
+            "If no rhyme scheme exists, simply respond 'no rhyme scheme detected'."
+        ),
+        "r": (
+            "You are a poetry expert. Examine the rhyme scheme of the following poem, identifying any specific patterns (e.g., ABAB, AABB). "
+            "If there is no consistent rhyme scheme, analyze whether the absence of rhyme contributes to the poem’s tone or themes. "
+            "If no rhyme scheme exists, simply respond 'no rhyme scheme detected'."
+        ),
+        "meter": (
+            "You are an expert in poetry structure. Identify any specific meter in the following poem (e.g., iambic pentameter, trochaic tetrameter). "
+            "If a particular meter is used, explain how it reinforces the poem’s themes or tone. If no meter is detected, explain whether the free verse style influences the poem's overall structure."
+        ),
+        "m": (
+            "You are an expert in poetry structure. Identify any specific meter in the following poem (e.g., iambic pentameter, trochaic tetrameter). "
+            "If a particular meter is used, explain how it reinforces the poem’s themes or tone. If no meter is detected, explain whether the free verse style influences the poem's overall structure."
+        ),
+        "general": (
+        "You are an expert poetry analyst. Provide a comprehensive analysis of the following poem, addressing its themes, tone, structure, style, and any notable literary devices. "
+        "Discuss how these elements work together to create the poem's overall effect. Consider the poem’s potential cultural or historical context, and offer multiple interpretations where relevant. "
+        "Your analysis should cover how the poem’s language, imagery, and structure contribute to its meaning and emotional impact."
+    )
     }
 
     # Validate analysis_type and get the corresponding system prompt
     system_prompt = prompts.get(analysis_type)
     if not system_prompt:
-        raise ValueError(f"Invalid analysis type '{analysis_type}'. Supported types are: 'sentiment', 'themes', 'style', 's', 't', 'st'.")
+        raise ValueError(f"Invalid analysis type '{analysis_type}'. Supported types are: 'sentiment', 'themes', 'style', 'rhyme', 'meter', 's', 't', 'st', 'r', 'm'.")
 
     # Prepare the message payload
-    system_prompt = system_prompt + (f" the name of the poem is {poem_title}")
-    
+    system_prompt = system_prompt + f" The name of the poem is '{poem_title}' and it is provided below."
+
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": poem_text}
     ]
 
     # Make the API call and return the response
+    if analysis_type == "general":
+        max_toks = 1000
+    else:
+        max_toks = 600
     try:
         completion = client.chat.completions.create(
             model="gpt-4o-mini",  # Switch to a more powerful model if available
             messages=messages,
             temperature=0.75,  # Adjust temperature to balance creativity and accuracy
-            max_tokens=300,   # Limit the number of tokens for the response
+            max_tokens=max_toks,   # Limit the number of tokens for the response
             top_p=0.95,        # Consider the most likely outputs
             frequency_penalty=0.1,  # Adjust penalties to control repetitive outputs
             presence_penalty=0.1
