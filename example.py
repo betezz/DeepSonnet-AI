@@ -129,8 +129,8 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
             temperature=0.75,  # Adjust temperature to balance creativity and accuracy
             max_tokens=max_toks,   # Limit the number of tokens for the response
             top_p=0.95,        # Consider the most likely outputs
-            frequency_penalty=0.1,  # Adjust penalties to control repetitive outputs
-            presence_penalty=0.1
+            frequency_penalty=0.2,  # Adjust penalties to control repetitive outputs
+            presence_penalty=0.2
         )
         return completion.choices[0].message.content.strip()  # Return the cleaned response content
 
