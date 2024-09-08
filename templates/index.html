@@ -33,6 +33,9 @@
         .result-column {
             padding-left: 20px;
         }
+        #back-button {
+            margin-top: 20px;
+        }
     </style>
 </head>
 <body>
@@ -77,12 +80,15 @@
                 <h3>Submitted Poem</h3>
                 <h5 id="displayed-poem-title"></h5>
                 <pre id="displayed-poem-text"></pre> <!-- `pre` preserves poem formatting -->
+                <button id="back-button" class="btn btn-secondary">Back</button>
             </div>
 
             <!-- Right Column: Analysis Result -->
             <div class="col-md-6 result-column">
                 <h3>Analysis Result</h3>
                 <div id="result" class="result"></div>
+
+                <!-- Back Button (removed and changed position) -->
             </div>
         </div>
     </div>
@@ -94,3 +100,4 @@
     <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 </body>
 </html>
+

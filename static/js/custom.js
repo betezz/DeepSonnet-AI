@@ -51,3 +51,17 @@ document.getElementById('poem-form').addEventListener('submit', function(event) 
         console.error('Error:', error);
     });
 });
+
+// Handle the "Back" button click to return to the form
+document.getElementById('back-button').addEventListener('click', function() {
+    // Hide the two-column layout
+    document.getElementById('analysis-container').style.display = 'none';
+
+    // Show the form again
+    document.getElementById('poem-form').style.display = 'block';
+
+    // Clear the result content and the displayed poem (optional)
+    document.getElementById('result').innerHTML = '';
+    document.getElementById('displayed-poem-title').innerText = '';
+    document.getElementById('displayed-poem-text').innerText = '';
+});
