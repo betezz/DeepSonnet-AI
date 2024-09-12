@@ -105,38 +105,120 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
     }
 
     # Validate analysis_type and get the corresponding system prompt
-    system_prompt = prompts.get(analysis_type)
-    if not system_prompt:
-        raise ValueError(f"Invalid analysis type '{analysis_type}'. Supported types are: 'sentiment', 'themes', 'style', 'rhyme', 'meter', 's', 't', 'st', 'r', 'm'.")
+    if analysis_type != "king":
+        system_prompt = prompts.get(analysis_type)
+        if not system_prompt:
+            raise ValueError(f"Invalid analysis type '{analysis_type}'. Supported types are: 'sentiment', 'themes', 'style', 'rhyme', 'meter', 's', 't', 'st', 'r', 'm'.")
 
-    # Prepare the message payload
-    system_prompt = system_prompt + f" The name of the poem is '{poem_title}' and it is provided below."
+        # Prepare the message payload
+        system_prompt = system_prompt + f" The name of the poem is '{poem_title}' and it is provided below."
+
+        messages = [
+            {"role": "system", "content": system_prompt},
+            {"role": "user", "content": poem_text}
+        ]
+
+        # Make the API call and return the response
+        if analysis_type == "general":
+            max_toks = 1000
+        else:
+            max_toks = 600
+            
+        try:
+            completion = client.chat.completions.create(
+                model="gpt-4o-mini",  # Switch to a more powerful model if available
+                messages=messages,
+                temperature=0.75,  # Adjust temperature to balance creativity and accuracy
+                max_tokens=max_toks,   # Limit the number of tokens for the response
+                top_p=0.95,        # Consider the most likely outputs
+                frequency_penalty=0.2,  # Adjust penalties to control repetitive outputs
+                presence_penalty=0.2
+            )
+            return completion.choices[0].message.content.strip()  # Return the cleaned response content
+
+        except Exception as e:
+            # Handle API errors gracefully
+            raise RuntimeError(f"An error occurred while analyzing the poem: {str(e)}")
+    else: 
+        return king_analysis(client, poem_text, poem_title)
+    
+def king_analysis(client, poem_text, poem_title):
+    
+    #functionality for king analysis
+    rhyme_scheme = king_rhyme_scheme(client, poem_text)
+    poem_meter = king_meter_analysis(client, poem_text)
+    
+    total = "Rhyme Scheme: \n"
+    total += rhyme_scheme + "\n"
+    total += "Meter: \n"
+    total += poem_meter
+    return total
+    
+        
+
+
+def king_rhyme_scheme(client,poem_text):
+    
+    system_prompt = (
+        "You are an Expert Poet. Your task is to transcribe the rhyme scheme of the given poem. "
+        "Analyze the main body of the poem and output the rhyme scheme without line breaks, using '--' where line breaks may occur. "
+        "The rhyme scheme should be in standard form (e.g., ABAB, AABB). "
+        "If there is no detectable rhyme scheme, simply output 'No rhyme scheme detected'. "
+    )
 
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": poem_text}
     ]
 
-    # Make the API call and return the response
-    if analysis_type == "general":
-        max_toks = 1000
-    else:
-        max_toks = 600
-        
     try:
         completion = client.chat.completions.create(
-            model="gpt-4o-mini",  # Switch to a more powerful model if available
+            model="gpt-4o-mini",  # Use the most recent model for best results
             messages=messages,
-            temperature=0.75,  # Adjust temperature to balance creativity and accuracy
-            max_tokens=max_toks,   # Limit the number of tokens for the response
-            top_p=0.95,        # Consider the most likely outputs
-            frequency_penalty=0.2,  # Adjust penalties to control repetitive outputs
-            presence_penalty=0.2
+            temperature=0.3,  # Lower temperature for more consistent output
+            max_tokens=100,   # 100 tokens should be sufficient for rhyme scheme
+            top_p=0.95,       # Slightly lower top_p for more focused outputs
+            frequency_penalty=0.0,
+            presence_penalty=0.0
         )
-        return completion.choices[0].message.content.strip()  # Return the cleaned response content
+        return completion.choices[0].message.content.strip()
 
     except Exception as e:
-        # Handle API errors gracefully
-        raise RuntimeError(f"An error occurred while analyzing the poem: {str(e)}")
+        raise RuntimeError(f"An error occurred while analyzing the rhyme scheme: {str(e)}")
 
+def king_meter_analysis(client, poem_text):
+    system_prompt = (
+        "You are an Expert Poet specializing in metrical analysis. Your task is to: "
+        "1. Identify the predominant meter of the poem (e.g., iambic pentameter, trochaic tetrameter). "
+        "2. Provide a line-by-line scansion of the poem using the following notation: "
+        "   - Use '˘' for unstressed syllables and '′' for stressed syllables. "
+        "   - Separate each foot with a vertical bar '|'. "
+        "   - Use '--' to indicate line breaks. "
+        "3. If the poem does not have a consistent meter, state 'No consistent meter detected' "
+        "   and provide the scansion as described above. "
+        "4. Your output should be in the following format: "
+        "   METER: [Identified meter or 'No consistent meter detected'] "
+        "   SCANSION: [Line-by-line scansion] "
+        "Provide only the requested information without additional analysis or interpretation."
+    )
 
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": poem_text}
+    ]
+
+    try:
+        completion = client.chat.completions.create(
+            model="gpt-4",
+            messages=messages,
+            temperature=0.3,  # Lower temperature for more consistent, objective output
+            max_tokens=500,   # Increased to accommodate longer poems
+            top_p=0.95,
+            frequency_penalty=0.0,
+            presence_penalty=0.0
+        )
+        return completion.choices[0].message.content.strip()
+
+    except Exception as e:
+        raise RuntimeError(f"An error occurred during meter analysis: {str(e)}")
+    
