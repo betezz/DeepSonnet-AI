@@ -212,7 +212,7 @@ def king_meter_analysis(client, poem_text):
 
     try:
         completion = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-4o-mini",
             messages=messages,
             temperature=0.3,  # Lower temperature for more consistent, objective output
             max_tokens=500,   # Increased to accommodate longer poems
@@ -251,7 +251,7 @@ def king_theme_analysis(client, poem_text, poem_title):
 
     try:
         completion = client.chat.completions.create(
-            model="gpt-4o",
+            model="gpt-4o-mini",
             messages=messages,
             temperature=0.7, 
             max_tokens=500,   
