@@ -45,7 +45,11 @@ def analyze_poem_endpoint():
         result = analyze_poem(client, poem_text, poem_title, analysis_type)
 
         # Return the result as a JSON response
-        return jsonify({'result': result})
+        if isinstance(result, str):
+            return jsonify({'result': result})
+        else:
+            #to be implemented here
+            return jsonify({'result': result}) #should work for now? 
 
     except Exception as e:
         return jsonify({'error': str(e)}), 500
@@ -53,3 +57,4 @@ def analyze_poem_endpoint():
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5001))
     app.run(debug=True, host='0.0.0.0', port=port)
+

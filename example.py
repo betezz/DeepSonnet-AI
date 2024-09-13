@@ -140,18 +140,21 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
             # Handle API errors gracefully
             raise RuntimeError(f"An error occurred while analyzing the poem: {str(e)}")
     else: 
-        return king_analysis(client, poem_text, poem_title)
+        return format_king_analysis(king_analysis(client, poem_text, poem_title))
     
 def king_analysis(client, poem_text, poem_title):
     
     #functionality for king analysis
     rhyme_scheme = king_rhyme_scheme(client, poem_text)
     poem_meter = king_meter_analysis(client, poem_text)
+    poem_analysis = king_theme_analysis(client, poem_text, poem_title)
     
-    total = "Rhyme Scheme: \n"
-    total += rhyme_scheme + "\n"
-    total += "Meter: \n"
-    total += poem_meter
+    total = {
+        "Rhyme Scheme" : rhyme_scheme,
+        "Poem Meter" : poem_meter,
+        "Poem Analysis" : poem_analysis
+    }
+    
     return total
     
         
@@ -222,3 +225,59 @@ def king_meter_analysis(client, poem_text):
     except Exception as e:
         raise RuntimeError(f"An error occurred during meter analysis: {str(e)}")
     
+def king_theme_analysis(client, poem_text, poem_title):
+    """
+    Provides a detailed theme analysis for the given poem.
+    
+    Parameters:
+    - client: An instance of the OpenAI API client.
+    - poem_text (str): The text of the poem to analyze.
+
+    Returns:
+    - str: The detailed theme analysis of the poem.
+    """
+    system_prompt = (
+        "You are an expert poetry critic. Conduct a deep thematic analysis of the following poem, identifying both primary and secondary themes. "
+        "Explain how these themes interact with one another and how they are developed throughout the poem. "
+        "Pay close attention to symbolism, imagery, and any recurring motifs that support the thematic structure. "
+        "Also, consider how the poem's cultural, historical, or philosophical context might influence its thematic message."
+        f"the poems title is {poem_title}, you should mention this atleast once in your analysis"
+    )
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": poem_text}
+    ]
+
+    try:
+        completion = client.chat.completions.create(
+            model="gpt-4o",
+            messages=messages,
+            temperature=0.7, 
+            max_tokens=500,   
+            top_p=0.95,
+            frequency_penalty=0.2,
+            presence_penalty=0.2
+        )
+        return completion.choices[0].message['content'].strip()
+
+    except Exception as e:
+        raise RuntimeError(f"An error occurred during theme analysis: {str(e)}")
+    
+    
+def format_king_analysis(result_dict):
+    """
+    Formats the analysis results into a single string for easy scrolling display.
+
+    Parameters:
+    - result_dict: The dictionary containing the different parts of the analysis.
+    
+    Returns:
+    - str: The formatted analysis as a single string.
+    """
+    formatted_output = (
+        f"--- Rhyme Scheme ---\n{result_dict['Rhyme Scheme']}\n\n"
+        f"--- Meter Analysis ---\n{result_dict['Poem Meter']}\n\n"
+        f"--- Thematic Analysis ---\n{result_dict['Poem Analysis']}\n"
+    )
+    return formatted_output
