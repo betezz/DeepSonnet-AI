@@ -2,6 +2,8 @@ import os
 from openai import OpenAI
 import ssl
 from dotenv import load_dotenv
+import concurrent.futures
+import re
 
 load_dotenv()
 api_key = os.getenv('OPENAI_API_KEY')
@@ -143,18 +145,22 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
         return format_king_analysis(king_analysis(client, poem_text, poem_title))
     
 def king_analysis(client, poem_text, poem_title):
-    
-    #functionality for king analysis
-    rhyme_scheme = king_rhyme_scheme(client, poem_text)
-    poem_meter = king_meter_analysis(client, poem_text)
-    poem_analysis = king_theme_analysis(client, poem_text, poem_title)
-    
+    # Use concurrent.futures to run analyses in parallel
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        rhyme_future = executor.submit(king_rhyme_scheme, client, poem_text)
+        meter_future = executor.submit(king_meter_analysis, client, poem_text)
+        theme_future = executor.submit(king_theme_analysis, client, poem_text, poem_title)
+
+        rhyme_scheme = rhyme_future.result()
+        poem_meter = meter_future.result()
+        poem_analysis = theme_future.result()
+
     total = {
-        "Rhyme Scheme" : rhyme_scheme,
-        "Poem Meter" : poem_meter,
-        "Poem Analysis" : poem_analysis
+        "Rhyme Scheme": rhyme_scheme,
+        "Poem Meter": poem_meter,
+        "Poem Analysis": poem_analysis
     }
-    
+
     return total
     
         
@@ -166,6 +172,7 @@ def king_rhyme_scheme(client,poem_text):
         "You are an Expert Poet. Your task is to transcribe the rhyme scheme of the given poem. "
         "Analyze the main body of the poem and output the rhyme scheme without line breaks, using '--' where line breaks may occur. "
         "The rhyme scheme should be in standard form (e.g., ABAB, AABB). "
+        "Keep in mind that the poem may not be comprised of stanzas of uniform legnth, and the rhyme scheme may need to have vatying legnths (e.g., ABB BCBC CDD DEDE, for instance)"
         "If there is no detectable rhyme scheme, simply output 'No rhyme scheme detected'. "
     )
 
@@ -267,17 +274,25 @@ def king_theme_analysis(client, poem_text, poem_title):
     
 def format_king_analysis(result_dict):
     """
-    Formats the analysis results into a single string for easy scrolling display.
+    Formats the analysis results into a single string for easy scrolling display,
+    converting Markdown-style formatting to HTML.
 
     Parameters:
     - result_dict: The dictionary containing the different parts of the analysis.
     
     Returns:
-    - str: The formatted analysis as a single string.
+    - str: The formatted analysis as a single string with HTML formatting.
     """
+    def markdown_to_html(text):
+        # Convert **bold** to <strong>bold</strong>
+        text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
+        # Convert --text-- to <em>text</em> (assuming -- is used for emphasis)
+        text = re.sub(r'\-\-(.*?)\-\-', r'<em>\1</em>', text)
+        return text
+
     formatted_output = (
-        f"--- Rhyme Scheme ---\n{result_dict['Rhyme Scheme']}\n\n"
-        f"--- Meter Analysis ---\n{result_dict['Poem Meter']}\n\n"
-        f"--- Thematic Analysis ---\n{result_dict['Poem Analysis']}\n"
+        f"<h3>Rhyme Scheme</h3>\n<p>{markdown_to_html(result_dict['Rhyme Scheme'])}</p>\n\n"
+        f"<h3>Meter Analysis</h3>\n<p>{markdown_to_html(result_dict['Poem Meter'])}</p>\n\n"
+        f"<h3>Thematic Analysis</h3>\n<p>{markdown_to_html(result_dict['Poem Analysis'])}</p>\n"
     )
-    return formatted_output
+    return formatted_output.replace('\n', '<br>')
