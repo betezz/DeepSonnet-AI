@@ -19,7 +19,7 @@ def get_openai_completion(client, model, system_content, user_content):
                 {"role": "user", "content": user_content}
             ]
         )
-        return completion.choices[0].message['content']
+        return completion.choices[0].message.content
     except Exception as e:
         print(f"Error fetching completion: {e}")
         return None
@@ -259,7 +259,7 @@ def king_theme_analysis(client, poem_text, poem_title):
             frequency_penalty=0.2,
             presence_penalty=0.2
         )
-        return completion.choices[0].message['content'].strip()
+        return completion.choices[0].message.content.strip()
 
     except Exception as e:
         raise RuntimeError(f"An error occurred during theme analysis: {str(e)}")
