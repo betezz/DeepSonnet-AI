@@ -1,12 +1,38 @@
 import os
 from openai import OpenAI
 import ssl
+import nltk
+from nltk.corpus import cmudict
+from nltk.metrics.distance import edit_distance
 from dotenv import load_dotenv
 import concurrent.futures
 import re
+from difflib import SequenceMatcher
 
 load_dotenv()
 api_key = os.getenv('OPENAI_API_KEY')
+
+nltk.data.path.append("/tmp/nltk_data")
+
+nltk_data_downloaded = False
+
+def ensure_nltk_data():
+    global nltk_data_downloaded
+    if not nltk_data_downloaded:
+        try:
+            nltk.data.find('tokenizers/punkt')
+            nltk.data.find('corpora/cmudict')
+            nltk.data.find('tokenizers/punkt_tab')  # Add this line
+            nltk_data_downloaded = True
+        except LookupError:
+            try:
+                nltk.download('punkt', download_dir="/tmp/nltk_data", quiet=True)
+                nltk.download('cmudict', download_dir="/tmp/nltk_data", quiet=True)
+                nltk.download('punkt_tab', download_dir="/tmp/nltk_data", quiet=True)  # Add this line
+                nltk_data_downloaded = True
+            except Exception as e:
+                print(f"Error downloading NLTK data: {e}")
+                
 
 def initialize_openai_client(): 
     client = OpenAI(api_key=api_key)
@@ -163,36 +189,118 @@ def king_analysis(client, poem_text, poem_title):
 
     return total
     
-        
-
-
-def king_rhyme_scheme(client,poem_text):
     
-    system_prompt = (
-        "You are an Expert Poet. Your task is to transcribe the rhyme scheme of the given poem. "
-        "Analyze the main body of the poem and output the rhyme scheme without line breaks, using '--' where line breaks may occur. "
-        "The rhyme scheme should be in standard form (e.g., ABAB, AABB). "
-        "Keep in mind that the poem may not be comprised of stanzas of uniform legnth, and the rhyme scheme may need to have vatying legnths (e.g., ABB BCBC CDD DEDE, for instance)"
-        "If there is no detectable rhyme scheme, simply output 'No rhyme scheme detected'. "
-    )
+pronouncing_dict = cmudict.dict()
 
+def get_rhyme_sound(word):
+    """Extract the stressed vowel and following sounds."""
+    word = word.lower().strip(string.punctuation)
+    if word in pronouncing_dict:
+        pronunciation = pronouncing_dict[word][0]
+        for i in reversed(range(len(pronunciation))):
+            if any(char.isdigit() for char in pronunciation[i]):
+                return pronunciation[i:]
+    return None
+
+def is_slant_rhyme(sound1, sound2, threshold=2):
+    """Determine if two phonetic transcriptions are close enough to be considered slant rhymes."""
+    return edit_distance(sound1, sound2) <= threshold
+
+def fuzzy_rhyme(sound1, sound2):
+    """Return True if sounds are considered close enough to be near rhymes."""
+    ratio = SequenceMatcher(None, sound1, sound2).ratio()
+    return ratio > 0.75  # Adjust the ratio threshold as needed
+
+def get_best_pronunciation(word):
+    """Choose the pronunciation with the highest similarity to existing rhymes."""
+    pronunciations = pronouncing_dict.get(word, [])
+    best_score = float('inf')
+    best_pronunciation = None
+    for pronunciation in pronunciations:
+        for known_pron in unique_sounds:
+            score = edit_distance(pronunciation, known_pron)
+            if score < best_score:
+                best_score = score
+                best_pronunciation = pronunciation
+    return best_pronunciation
+
+def king_rhyme_scheme(client, poem_text):
+    ensure_nltk_data()
+    
+    # Preprocess the poem
+    lines = [line.strip() for line in poem_text.split('\n') if line.strip()]
+    last_words = [word_tokenize(line)[-1].lower() for line in lines]
+    
+    # Get rhyme sounds
+    rhyme_sounds = [get_rhyme_sound(word) for word in last_words]
+    
+    # Identify unique rhyme sounds and assign letters
+    unique_sounds = {}
+    rhyme_scheme = []
+    current_letter = 'A'
+    
+    for sound in rhyme_sounds:
+        if sound is None:
+            rhyme_scheme.append('X')  # Non-rhyming line
+        else:
+            found_rhyme = False
+            for known_sound in unique_sounds:
+                if sound == known_sound or is_slant_rhyme(sound, known_sound) or fuzzy_rhyme(sound, known_sound):
+                    rhyme_scheme.append(unique_sounds[known_sound])
+                    found_rhyme = True
+                    break
+            
+            if not found_rhyme:
+                unique_sounds[sound] = current_letter
+                rhyme_scheme.append(current_letter)
+                current_letter = chr(ord(current_letter) + 1)
+    
+    # Detect stanzas (assuming blank lines separate stanzas)
+    stanzas = re.split(r'\n\s*\n', poem_text)
+    stanza_lengths = [len([line for line in stanza.split('\n') if line.strip()]) for stanza in stanzas]
+    
+    # Construct the final rhyme scheme with stanza separators
+    final_scheme = []
+    current_index = 0
+    for length in stanza_lengths:
+        final_scheme.extend(rhyme_scheme[current_index:current_index + length])
+        if current_index + length < len(rhyme_scheme):
+            final_scheme.append('--')
+        current_index += length
+    
+    # Prepare the result
+    result = ''.join(final_scheme)
+    
+    # Modify the system prompt to give more emphasis on manual analysis
+    system_prompt = (
+        "You are an Expert Poet assisting in rhyme scheme analysis. Your task is to analyze the rhyme scheme of the given poem. "
+        f"A preliminary analysis suggests the following scheme: {result}\n"
+        "However, this may not be accurate. Please perform your own analysis and provide the correct rhyme scheme. "
+        "1. Analyze the poem's rhyme structure carefully, considering near rhymes and slant rhymes. "
+        "2. Provide the rhyme scheme using capital letters (A, B, C, etc.) for each unique rhyme sound, in basic standard notation."
+        "for instance, if the last words of the lines in the first stanza were 'love', 'hate', 'dove', 'fate', in that order, the rhyme scheme would be ABAB"
+        "3. Use '--' to separate stanzas. "
+        "4. If there's no consistent rhyme scheme, state 'No consistent rhyme scheme detected'. "
+        "Your output should only contain the final rhyme scheme or 'No consistent rhyme scheme detected', nothing else."
+    )
+    
     messages = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": poem_text}
     ]
-
+    
     try:
         completion = client.chat.completions.create(
-            model="gpt-4o-mini",  # Use the most recent model for best results
+            model="gpt-4o",  # or "gpt-3.5-turbo" depending on your budget
             messages=messages,
-            temperature=0.3,  # Lower temperature for more consistent output
-            max_tokens=100,   # 100 tokens should be sufficient for rhyme scheme
-            top_p=0.95,       # Slightly lower top_p for more focused outputs
+            temperature=0.3,
+            max_tokens=200,
+            top_p=0.95,
             frequency_penalty=0.0,
             presence_penalty=0.0
         )
         return completion.choices[0].message.content.strip()
-
+    
     except Exception as e:
         raise RuntimeError(f"An error occurred while analyzing the rhyme scheme: {str(e)}")
 

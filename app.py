@@ -4,7 +4,7 @@ import nltk
 from nltk.corpus import cmudict
 import ssl
 from openai import OpenAI
-from example import initialize_openai_client, analyze_poem  # Import the functions from your example.py
+from example import initialize_openai_client, analyze_poem, ensure_nltk_data  # Import the functions from your example.py
 from poems import get_poem
 from flask_cors import CORS
 
@@ -18,6 +18,8 @@ except AttributeError:
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app)
+
+ensure_nltk_data()
 
 # Initialize the OpenAI client
 client = initialize_openai_client()
