@@ -195,7 +195,7 @@ def king_analysis(client, poem_text, poem_title):
     return total
     
     
-pronouncing_dict = cmudict.dict()
+pronouncing_dict = None #cmudict.dict()
 
 def get_rhyme_sound(word):
     """Extract the stressed vowel and following sounds."""
