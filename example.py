@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import concurrent.futures
 import re
 from difflib import SequenceMatcher
+import string
 
 load_dotenv()
 api_key = os.getenv('OPENAI_API_KEY')
@@ -15,6 +16,8 @@ api_key = os.getenv('OPENAI_API_KEY')
 nltk.data.path.append("/tmp/nltk_data")
 
 nltk_data_downloaded = False
+
+'''
 
 def ensure_nltk_data():
     global nltk_data_downloaded
@@ -32,6 +35,8 @@ def ensure_nltk_data():
                 nltk_data_downloaded = True
             except Exception as e:
                 print(f"Error downloading NLTK data: {e}")
+                
+'''
                 
 
 def initialize_openai_client(): 
@@ -217,17 +222,21 @@ def get_best_pronunciation(word):
     best_score = float('inf')
     best_pronunciation = None
     for pronunciation in pronunciations:
+        '''
+        
         for known_pron in unique_sounds:
             score = edit_distance(pronunciation, known_pron)
             if score < best_score:
                 best_score = score
                 best_pronunciation = pronunciation
+        '''
     return best_pronunciation
 
 def king_rhyme_scheme(client, poem_text):
-    ensure_nltk_data()
+    #ensure_nltk_data()
     
     # Preprocess the poem
+    '''
     lines = [line.strip() for line in poem_text.split('\n') if line.strip()]
     last_words = [word_tokenize(line)[-1].lower() for line in lines]
     
@@ -271,11 +280,13 @@ def king_rhyme_scheme(client, poem_text):
     # Prepare the result
     result = ''.join(final_scheme)
     
+    '''
+    
     # Modify the system prompt to give more emphasis on manual analysis
     system_prompt = (
         "You are an Expert Poet assisting in rhyme scheme analysis. Your task is to analyze the rhyme scheme of the given poem. "
-        f"A preliminary analysis suggests the following scheme: {result}\n"
-        "However, this may not be accurate. Please perform your own analysis and provide the correct rhyme scheme. "
+        #f"A preliminary analysis suggests the following scheme: {result}\n"
+        #"However, this may not be accurate. Please perform your own analysis and provide the correct rhyme scheme. "
         "1. Analyze the poem's rhyme structure carefully, considering near rhymes and slant rhymes. "
         "2. Provide the rhyme scheme using capital letters (A, B, C, etc.) for each unique rhyme sound, in basic standard notation."
         "for instance, if the last words of the lines in the first stanza were 'love', 'hate', 'dove', 'fate', in that order, the rhyme scheme would be ABAB"
