@@ -45,9 +45,36 @@
         #back-button {
             margin-top: 20px;
         }
+        #sentiment-container {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        #sentiment-bar {
+            height: 20px;
+            background-color: #4CAF50;
+            border-radius: 5px;
+            transition: width 0.5s ease-in-out;
+        }
+        .navbar {
+            margin-bottom: 30px;
+        }
     </style>
 </head>
 <body>
+    <!-- Add this navigation bar just after the <body> tag -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <a class="navbar-brand" href="#">Poem Analyzer</a>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ url_for('leaderboard') }}">Leaderboard</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="container">
         <!-- Form for poem submission -->
         <h1 class="text-center mb-4">Analyze Your Poem</h1>
@@ -72,6 +99,7 @@
                     <option value="king">King Analysis</option>
                 </select>
             </div>
+            <div class="form-group" style="height: 15px;"></div>
             <button type="submit" class="btn btn-primary">Analyze</button>
         </form>
 
@@ -91,12 +119,26 @@
                 <h5 id="displayed-poem-title"></h5>
                 <pre id="displayed-poem-text"></pre> <!-- `pre` preserves poem formatting -->
                 <button id="back-button" class="btn btn-secondary">Back</button>
+                <!-- Add this inside the poem-column div -->
+                <div id="poem-visualization" class="mt-4">
+                    <!-- Visualization will be inserted here by JavaScript -->
+                </div>
             </div>
 
             <!-- Right Column: Analysis Result -->
             <div class="col-md-6 result-column">
                 <h3>Analysis Result:</h3>
                 <div id="result" class="result"></div>
+                <!-- Add this container for the sentiment meter -->
+                <div id="sentiment-container" class="mt-4">
+                    <!-- Sentiment meter will be inserted here by JavaScript -->
+                </div>
+                <div id="analysis-highlights" class="mt-4">
+                    <!-- Highlights will be inserted here by JavaScript -->
+                </div>
+                <div id="theme-cloud" class="mt-4">
+                    <!-- Theme cloud will be inserted here by JavaScript -->
+                </div>
             </div>
         </div>
     </div>
@@ -105,6 +147,50 @@
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            $('#poem-form').submit(function(e) {
+                e.preventDefault();
+                $('#loading').show();
+                $.ajax({
+                    url: '/analyze_poem',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({
+                        poem_text: $('#poem_text').val(),
+                        poem_title: $('#poem_title').val(),
+                        analysis_type: $('#analysis_type').val()
+                    }),
+                    success: function(response) {
+                        $('#loading').hide();
+                        $('.two-column').show();
+                        $('#displayed-poem-title').text($('#poem_title').val());
+                        $('#displayed-poem-text').text($('#poem_text').val());
+                        
+                        if (response.result) {
+                            $('#result').html(response.result);  // Use .html() instead of .text()
+                        } else {
+                            $('#result').html("<p>No analysis result available.</p>");
+                        }
+                        
+                        // Display the score if available
+                        if (response.score !== undefined) {
+                            $('#result').append('<p><strong>Poem Score:</strong> ' + response.score + '</p>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#loading').hide();
+                        alert('An error occurred: ' + error);
+                    }
+                });
+            });
+
+            $('#back-button').click(function() {
+                $('.two-column').hide();
+            });
+        });
+    </script>
 </body>
 </html>

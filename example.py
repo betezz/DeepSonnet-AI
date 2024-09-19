@@ -72,6 +72,7 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
     Returns:
     - dict: The API response containing the analysis of the poem.
     """
+    print(f"Analyzing poem: {poem_title}, Analysis type: {analysis_type}")
     # Ensure poem_text is not empty or None
     if not poem_text or not isinstance(poem_text, str):
         raise ValueError("Poem text must be a non-empty string.")
@@ -94,12 +95,12 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
         ),
         "themes": (
             "You are a seasoned poetry critic. Identify and discuss the primary themes of the following poem, using examples to support your analysis. "
-            "After identifying the central themes, explain how they interrelate and contribute to the poem’s overall meaning. "
+            "After identifying the central themes, explain how they interrelate and contribute to the poem's overall meaning. "
             "Discuss any potential underlying symbolism or secondary themes."
         ),
         "t": (
             "You are a seasoned poetry critic. Identify and discuss the primary themes of the following poem, using examples to support your analysis. "
-            "After identifying the central themes, explain how they interrelate and contribute to the poem’s overall meaning. "
+            "After identifying the central themes, explain how they interrelate and contribute to the poem's overall meaning. "
             "Discuss any potential underlying symbolism or secondary themes."
         ),
         "style": (
@@ -114,26 +115,26 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
         ),
         "rhyme": (
             "You are a poetry expert. Examine the rhyme scheme of the following poem, identifying any specific patterns (e.g., ABAB, AABB). "
-            "If there is no consistent rhyme scheme, analyze whether the absence of rhyme contributes to the poem’s tone or themes. "
+            "If there is no consistent rhyme scheme, analyze whether the absence of rhyme contributes to the poem's tone or themes. "
             "If no rhyme scheme exists, simply respond 'no rhyme scheme detected'."
         ),
         "r": (
             "You are a poetry expert. Examine the rhyme scheme of the following poem, identifying any specific patterns (e.g., ABAB, AABB). "
-            "If there is no consistent rhyme scheme, analyze whether the absence of rhyme contributes to the poem’s tone or themes. "
+            "If there is no consistent rhyme scheme, analyze whether the absence of rhyme contributes to the poem's tone or themes. "
             "If no rhyme scheme exists, simply respond 'no rhyme scheme detected'."
         ),
         "meter": (
             "You are an expert in poetry structure. Identify any specific meter in the following poem (e.g., iambic pentameter, trochaic tetrameter). "
-            "If a particular meter is used, explain how it reinforces the poem’s themes or tone. If no meter is detected, explain whether the free verse style influences the poem's overall structure."
+            "If a particular meter is used, explain how it reinforces the poem's themes or tone. If no meter is detected, explain whether the free verse style influences the poem's overall structure."
         ),
         "m": (
             "You are an expert in poetry structure. Identify any specific meter in the following poem (e.g., iambic pentameter, trochaic tetrameter). "
-            "If a particular meter is used, explain how it reinforces the poem’s themes or tone. If no meter is detected, explain whether the free verse style influences the poem's overall structure."
+            "If a particular meter is used, explain how it reinforces the poem's themes or tone. If no meter is detected, explain whether the free verse style influences the poem's overall structure."
         ),
         "general": (
         "You are an expert poetry analyst. Provide a comprehensive analysis of the following poem, addressing its themes, tone, structure, style, and any notable literary devices. "
-        "Discuss how these elements work together to create the poem's overall effect. Consider the poem’s potential cultural or historical context, and offer multiple interpretations where relevant. "
-        "Your analysis should cover how the poem’s language, imagery, and structure contribute to its meaning and emotional impact."
+        "Discuss how these elements work together to create the poem's overall effect. Consider the poem's potential cultural or historical context, and offer multiple interpretations where relevant. "
+        "Your analysis should cover how the poem's language, imagery, and structure contribute to its meaning and emotional impact."
     )
     }
 
@@ -167,14 +168,68 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
                 frequency_penalty=0.2,  # Adjust penalties to control repetitive outputs
                 presence_penalty=0.2
             )
-            return completion.choices[0].message.content.strip()  # Return the cleaned response content
+            print("API call successful")
+            result = completion.choices[0].message.content.strip()  # Return the cleaned response content
+
+            # Calculate a score based on the analysis
+            score = calculate_poem_score(client, poem_text, poem_title)
+
+            # Format the analysis result
+            formatted_result = format_analysis_result(result, analysis_type)
+
+            # Return both the analysis result and the score
+            return {'result': formatted_result, 'score': score}
 
         except Exception as e:
             # Handle API errors gracefully
+            print(f"Error in API call: {str(e)}")
             raise RuntimeError(f"An error occurred while analyzing the poem: {str(e)}")
     else: 
         return format_king_analysis(king_analysis(client, poem_text, poem_title))
     
+def calculate_poem_score(client, poem_text, poem_title):
+    system_prompt = (
+        "You are a harsh poetry critic. Analyze the given poem and assign a score from 0 to 100. "
+        "Consider the following aspects: originality, imagery, emotional impact, technical skill, and overall coherence. "
+        "Be extremely critical and demanding. A score above 90 should be extremely rare and reserved only for truly exceptional poems. "
+        "Most poems should score between 40 and 70. Provide a brief justification for your score."
+        "Justifications should be around 100 words"
+    )
+
+    messages = [
+        {"role": "system", "content": system_prompt},
+        {"role": "user", "content": f"Title: {poem_title}\n\n{poem_text}"}
+    ]
+
+    try:
+        completion = client.chat.completions.create(
+            model="gpt-4o-mini",  # Using a more advanced model for critical analysis
+            messages=messages,
+            temperature=0.5,  # Lower temperature for more consistent scoring
+            max_tokens=150,   # Limit response length
+            top_p=0.95,
+            frequency_penalty=0.1,
+            presence_penalty=0.1
+        )
+
+        response = completion.choices[0].message.content.strip()
+        
+        # Extract score from the response
+        score_match = re.search(r'\b(\d{1,3})\b', response)
+        if score_match:
+            score = int(score_match.group(1))
+            # Ensure score is within 0-100 range
+            score = max(0, min(score, 100))
+        else:
+            # Default score if no number is found
+            score = 50
+
+        return score
+
+    except Exception as e:
+        print(f"Error in calculate_poem_score: {str(e)}")
+        # Return a default score in case of error
+        return 50
 def king_analysis(client, poem_text, poem_title):
     # Use concurrent.futures to run analyses in parallel
     with concurrent.futures.ThreadPoolExecutor() as executor:
@@ -391,27 +446,33 @@ def king_theme_analysis(client, poem_text, poem_title):
         raise RuntimeError(f"An error occurred during theme analysis: {str(e)}")
     
     
-def format_king_analysis(result_dict):
+def format_analysis_result(result, analysis_type):
     """
-    Formats the analysis results into a single string for easy scrolling display,
-    converting Markdown-style formatting to HTML.
+    Formats the analysis results into HTML for easy display in the frontend.
 
     Parameters:
-    - result_dict: The dictionary containing the different parts of the analysis.
-    
+    - result: The analysis result (string or dictionary)
+    - analysis_type: The type of analysis performed
+
     Returns:
-    - str: The formatted analysis as a single string with HTML formatting.
+    - str: The formatted analysis as HTML
     """
     def markdown_to_html(text):
         # Convert **bold** to <strong>bold</strong>
         text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
-        # Convert --text-- to <em>text</em> (assuming -- is used for emphasis)
-        text = re.sub(r'\-\-(.*?)\-\-', r'<em>\1</em>', text)
+        # Convert *italic* to <em>italic</em>
+        text = re.sub(r'\*(.*?)\*', r'<em>\1</em>', text)
+        # Convert newlines to <br> tags
+        text = text.replace('\n', '<br>')
         return text
 
-    formatted_output = (
-        f"<h3>Rhyme Scheme</h3>\n<p>{markdown_to_html(result_dict['Rhyme Scheme'])}</p>\n\n"
-        f"<h3>Meter Analysis</h3>\n<p>{markdown_to_html(result_dict['Poem Meter'])}</p>\n\n"
-        f"<h3>Thematic Analysis</h3>\n<p>{markdown_to_html(result_dict['Poem Analysis'])}</p>\n"
-    )
-    return formatted_output.replace('\n', '<br>')
+    if analysis_type == "king":
+        formatted_output = (
+            f"<h3>Rhyme Scheme</h3><p>{markdown_to_html(result['Rhyme Scheme'])}</p>"
+            f"<h3>Meter Analysis</h3><p>{markdown_to_html(result['Poem Meter'])}</p>"
+            f"<h3>Thematic Analysis</h3><p>{markdown_to_html(result['Poem Analysis'])}</p>"
+        )
+    else:
+        formatted_output = f"<h3>{analysis_type.capitalize()} Analysis</h3><p>{markdown_to_html(result)}</p>"
+
+    return formatted_output

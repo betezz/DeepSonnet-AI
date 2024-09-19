@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Poem Leaderboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Poem Leaderboard</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Score</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for poem in poems %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ poem.title }}</td>
+                    <td>{{ poem.author }}</td>
+                    <td>{{ "%.2f"|format(poem.average_rating) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+</body>
+</html>
+
+

@@ -1,5 +1,6 @@
 Flask==3.0.3
 Flask_Cors==5.0.0
+Flask-SQLAlchemy==3.1.1
 nltk==3.9.1
 openai==1.43.1
 python-dotenv==1.0.1
