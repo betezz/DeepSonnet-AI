@@ -5,6 +5,36 @@ document.getElementById('poem-form').addEventListener('submit', function(event) 
     let poemText = document.getElementById('poem_text').value;
     let analysisType = document.getElementById('analysis_type').value;
 
+    // Check if the test poem is requested
+    if (poemText.trim() === "<test>") {
+        poemTitle = "Malvern Prep March";
+        poemText = `Yo Laville, you're soft as fluff,
+Out here actin' like you're tough.
+Talkin' smack, but can't keep pace,
+You're just background noise in this race.
+
+Your sticks? Weak. Your shots? A joke.
+We torch your D like you're a smoke.
+Watch us rip it—top-shelf, clean—
+Your goalie? Can't even be seen.
+
+You rock those ties, think you're elite,
+But on the turf? We run the street.
+You pull up scared, we see you sweat,
+By halftime, you're not a threat.
+
+Your "legacy" don't mean a thing,
+When Malvern's kings, we own this ring.
+We dominate, you fake the grind,
+Your glory days? All left behind.
+
+Your prissy ways, your fancy crest,
+Still can't hang with Philly's best.
+So go on, Laville, talk that smack,
+But we'll leave you flat on your back`;
+        console.log("Using test poem for analysis.");
+    }
+
     // Show the loading spinner
     document.getElementById('loading').style.display = 'block';
 
@@ -13,6 +43,9 @@ document.getElementById('poem-form').addEventListener('submit', function(event) 
 
     // Hide the form during analysis
     document.getElementById('poem-form').style.display = 'none';
+
+    // Hide the leaderboard button
+    document.getElementById('leaderboard-nav-item').style.display = 'none';
 
     fetch('/analyze_poem', {
         method: 'POST',
@@ -54,6 +87,9 @@ document.getElementById('poem-form').addEventListener('submit', function(event) 
         }
 
         visualizePoemStructure();
+
+        // Show the leaderboard button again
+        document.getElementById('leaderboard-nav-item').style.display = 'block';
     })
     .catch(error => {
         // Hide the loading spinner and show error
@@ -64,10 +100,13 @@ document.getElementById('poem-form').addEventListener('submit', function(event) 
             <pre>${error.message}\n\nStack trace:\n${error.stack}</pre>
         `;
         console.error('Error:', error);
+
+        // Show the leaderboard button again in case of error
+        document.getElementById('leaderboard-nav-item').style.display = 'block';
     });
 });
 
-// Handle the "Back" button click to return to the form
+// Update the back button handler
 document.getElementById('back-button').addEventListener('click', function() {
     // Hide the two-column layout
     document.getElementById('analysis-container').style.display = 'none';
@@ -79,6 +118,9 @@ document.getElementById('back-button').addEventListener('click', function() {
     document.getElementById('result').innerHTML = '';
     document.getElementById('displayed-poem-title').innerText = '';
     document.getElementById('displayed-poem-text').innerText = '';
+
+    // Show the leaderboard button again
+    document.getElementById('leaderboard-nav-item').style.display = 'block';
 });
 
 function visualizePoemStructure() {
@@ -180,3 +222,19 @@ function submitRating(poemId, rating) {
 
 // Call this when the page loads
 document.addEventListener('DOMContentLoaded', fetchRandomPoem);
+
+// Add this function
+function useTestPoem() {
+    document.getElementById('poem_title').value = "Test Poem";
+    document.getElementById('poem_text').value = "<test>";
+}
+
+// Add this to your document ready function
+$(document).ready(function() {
+    // ... existing code ...
+
+    // Add a button to use the test poem
+    $('#poem-form').prepend('<button type="button" onclick="useTestPoem()">Use Test Poem</button>');
+
+    // ... rest of your existing code ...
+});

@@ -61,6 +61,7 @@
             margin-bottom: 30px;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
 </head>
 <body>
     <!-- Add this navigation bar just after the <body> tag -->
@@ -68,8 +69,10 @@
         <div class="container">
             <a class="navbar-brand" href="#">Poem Analyzer</a>
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ url_for('leaderboard') }}">Leaderboard</a>
+                <li class="nav-item" id="leaderboard-nav-item">
+                    <a class="nav-link btn btn-outline-primary" href="{{ url_for('leaderboard') }}">
+                        <i class="fas fa-trophy"></i> View Top Rated Poems
+                    </a>
                 </li>
             </ul>
         </div>
@@ -79,6 +82,7 @@
         <!-- Form for poem submission -->
         <h1 class="text-center mb-4">Analyze Your Poem</h1>
         <form id="poem-form">
+            <!-- The new button will be inserted here -->
             <div class="form-group">
                 <label for="poem_title">Poem Title:</label>
                 <input type="text" id="poem_title" name="poem_title" class="form-control" value="Untitled">

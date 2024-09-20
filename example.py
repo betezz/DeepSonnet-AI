@@ -72,6 +72,7 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
     Returns:
     - dict: The API response containing the analysis of the poem.
     """
+    # Add this block at the beginning of the function
     print(f"Analyzing poem: {poem_title}, Analysis type: {analysis_type}")
     # Ensure poem_text is not empty or None
     if not poem_text or not isinstance(poem_text, str):
@@ -185,7 +186,7 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
             print(f"Error in API call: {str(e)}")
             raise RuntimeError(f"An error occurred while analyzing the poem: {str(e)}")
     else: 
-        return format_king_analysis(king_analysis(client, poem_text, poem_title))
+        return format_analysis_result(king_analysis(client, poem_text, poem_title))
     
 def calculate_poem_score(client, poem_text, poem_title):
     system_prompt = (

@@ -68,6 +68,36 @@ def analyze_poem_endpoint():
         poem_text = data.get('poem_text')
         poem_title = data.get('poem_title', 'Untitled')
         analysis_type = data.get('analysis_type', 'sentiment')
+        
+        if poem_text == "<test>":
+            poem_title = "Malvern Prep March"
+            poem_text = """
+            Yo Laville, you’re soft as fluff,
+            Out here actin’ like you're tough.
+            Talkin’ smack, but can’t keep pace,
+            You’re just background noise in this race.
+
+            Your sticks? Weak. Your shots? A joke.
+            We torch your D like you’re a smoke.
+            Watch us rip it—top-shelf, clean—
+            Your goalie? Can’t even be seen.
+
+            You rock those ties, think you’re elite,
+            But on the turf? We run the street.
+            You pull up scared, we see you sweat,
+            By halftime, you’re not a threat.
+
+            Your “legacy” don’t mean a thing,
+            When Malvern’s kings, we own this ring.
+            We dominate, you fake the grind,
+            Your glory days? All left behind.
+
+            Your prissy ways, your fancy crest,
+            Still can’t hang with Philly’s best.
+            So go on, Laville, talk that smack,
+            But we’ll leave you flat on your back
+            """
+            print("Using test poem for analysis.")
 
         result = analyze_poem(client, poem_text, poem_title, analysis_type)
         
