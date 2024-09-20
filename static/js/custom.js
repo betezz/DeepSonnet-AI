@@ -32,7 +32,7 @@ Your prissy ways, your fancy crest,
 Still can't hang with Philly's best.
 So go on, Laville, talk that smack,
 But we'll leave you flat on your back`;
-        console.log("Using test poem for analysis.");
+        console.log("DeepSonnet AI: Using test poem for analysis.");
     }
 
     // Show the loading spinner
@@ -208,15 +208,15 @@ function submitRating(poemId, rating) {
     .then(response => response.json())
     .then(data => {
         if (data.success) {
-            alert('Rating submitted successfully!');
+            alert('DeepSonnet AI: Rating submitted successfully!');
             fetchRandomPoem();  // Get a new poem after rating
         } else {
-            alert('Failed to submit rating.');
+            alert('DeepSonnet AI: Failed to submit rating.');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('An error occurred while submitting the rating.');
+        alert('DeepSonnet AI: An error occurred while submitting the rating.');
     });
 }
 

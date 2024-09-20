@@ -97,7 +97,7 @@ def analyze_poem_endpoint():
             So go on, Laville, talk that smack,
             But we’ll leave you flat on your back
             """
-            print("Using test poem for analysis.")
+            print(f"DeepSonnet AI: Analyzing poem: {poem_title}, Analysis type: {analysis_type}")
 
         result = analyze_poem(client, poem_text, poem_title, analysis_type)
         

@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poem Analyzer</title>
+    <title>DeepSonnet AI - Poem Analyzer</title>
 
     <!-- favicon link-->
-    <link rel="icon" href="{{ url_for('static', filename='images/favicon.ico') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename='images/deepsonnet_favicon.ico') }}" type="image/x-icon">
 
     <!-- Link to local Bootstrap CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
@@ -62,16 +62,18 @@
         }
     </style>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <meta name="description" content="DeepSonnet AI - Advanced poem analysis using artificial intelligence. Uncover themes, sentiment, and style in your poetry.">
+    <meta name="keywords" content="DeepSonnet, AI, poem analysis, poetry, artificial intelligence">
 </head>
 <body>
     <!-- Add this navigation bar just after the <body> tag -->
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
         <div class="container">
-            <a class="navbar-brand" href="#">Poem Analyzer</a>
+            <a class="navbar-brand" href="#">DeepSonnet AI</a>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item" id="leaderboard-nav-item">
                     <a class="nav-link btn btn-outline-primary" href="{{ url_for('leaderboard') }}">
-                        <i class="fas fa-trophy"></i> View Top Rated Poems
+                        <i class="fas fa-trophy"></i> Top Rated Poems
                     </a>
                 </li>
             </ul>
@@ -80,7 +82,8 @@
 
     <div class="container">
         <!-- Form for poem submission -->
-        <h1 class="text-center mb-4">Analyze Your Poem</h1>
+        <h2 class="text-center mb-3">Analyze Your Poem</h2>
+        <p class="text-center mb-4">Uncover the depths of your poetry with AI-powered analysis</p>
         <form id="poem-form">
             <!-- The new button will be inserted here -->
             <div class="form-group">
