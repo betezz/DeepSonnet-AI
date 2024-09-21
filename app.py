@@ -5,11 +5,12 @@ import nltk
 from nltk.corpus import cmudict
 import ssl
 from openai import OpenAI
-from example import initialize_openai_client, analyze_poem # ensure_nltk_data Import the functions from your example.py
+from example import initialize_openai_client, analyze_poem, calculate_poem_score # ensure_nltk_data Import the functions from your example.py
 from poems import get_poem
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
+from concurrent.futures import ThreadPoolExecutor
 
 # Ensure NLTK resources are downloaded (e.g., for Sentiment Analysis)
 try:
@@ -72,36 +73,42 @@ def analyze_poem_endpoint():
         if poem_text == "<test>":
             poem_title = "Malvern Prep March"
             poem_text = """
-            Yo Laville, you’re soft as fluff,
-            Out here actin’ like you're tough.
-            Talkin’ smack, but can’t keep pace,
-            You’re just background noise in this race.
+            Yo Laville, you're soft as fluff,
+            Out here actin' like you're tough.
+            Talkin' smack, but can't keep pace,
+            You're just background noise in this race.
 
             Your sticks? Weak. Your shots? A joke.
-            We torch your D like you’re a smoke.
+            We torch your D like you're a smoke.
             Watch us rip it—top-shelf, clean—
-            Your goalie? Can’t even be seen.
+            Your goalie? Can't even be seen.
 
-            You rock those ties, think you’re elite,
+            You rock those ties, think you're elite,
             But on the turf? We run the street.
             You pull up scared, we see you sweat,
-            By halftime, you’re not a threat.
+            By halftime, you're not a threat.
 
-            Your “legacy” don’t mean a thing,
-            When Malvern’s kings, we own this ring.
+            Your "legacy" don't mean a thing,
+            When Malvern's kings, we own this ring.
             We dominate, you fake the grind,
             Your glory days? All left behind.
 
             Your prissy ways, your fancy crest,
-            Still can’t hang with Philly’s best.
+            Still can't hang with Philly's best.
             So go on, Laville, talk that smack,
-            But we’ll leave you flat on your back
+            But we'll leave you flat on your back
             """
             print(f"DeepSonnet AI: Analyzing poem: {poem_title}, Analysis type: {analysis_type}")
 
-        result = analyze_poem(client, poem_text, poem_title, analysis_type)
-        
-        return jsonify(result)  # The result is already formatted in HTML
+        # Use ThreadPoolExecutor to run analysis in parallel
+        with ThreadPoolExecutor() as executor:
+            analysis_future = executor.submit(analyze_poem, client, poem_text, poem_title, analysis_type)
+            score_future = executor.submit(calculate_poem_score, client, poem_text, poem_title)
+
+            result = analysis_future.result()
+            score = score_future.result()
+
+        return jsonify({'result': result['result'], 'score': score})
 
     except Exception as e:
         app.logger.error(f"Error in analyze_poem_endpoint: {str(e)}")
