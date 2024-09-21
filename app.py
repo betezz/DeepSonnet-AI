@@ -138,6 +138,10 @@ def get_random_poem():
         'content': poem.content
     })
 
+@app.route('/about')
+def about():
+    return render_template('about.html')
+
 # Add this function to create tables
 def create_tables():
     with app.app_context():

@@ -3,37 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DeepSonnet AI - Poem Analyzer</title>
+    <title>DeepSonnet AI - Advanced Poem Analysis Using Artificial Intelligence</title>
+
+    <!-- Add these meta tags for SEO -->
+    <meta name="description" content="DeepSonnet AI offers advanced poem analysis using artificial intelligence. Analyze your poems for sentiment, themes, style, and more with our cutting-edge AI technology.">
+    <meta name="keywords" content="DeepSonnet, AI poetry analysis, analyze poem AI, deep sonnet, artificial intelligence poetry, poem analyzer">
 
     <!-- favicon link-->
     <link rel="icon" href="{{ url_for('static', filename='images/deepsonnet_favicon.ico') }}" type="image/x-icon">
 
     <!-- Link to local Bootstrap CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    
+    <!-- Add custom CSS for a more professional look -->
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Roboto', Arial, sans-serif;
             background-color: #f8f9fa;
+            color: #333;
         }
         .container {
+            max-width: 800px;
             margin-top: 50px;
         }
-        .result {
-            margin-top: 30px;
+        .navbar {
+            background-color: #3498db;
+            padding-top: 0.25rem;    /* Reduce top padding */
+            padding-bottom: 0.25rem; /* Reduce bottom padding */
+        }
+        .navbar-brand {
+            font-size: 1.5rem;       /* Increase brand font size */
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+        .navbar .btn-outline-light {
+            padding: 0.25rem 0.5rem; /* Reduce button padding */
+            font-size: 1.1rem;       /* Increase button font size */
+        }
+        .navbar-nav .nav-link {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .btn-primary {
+            background-color: #3498db;
+            border-color: #3498db;
+        }
+        .btn-primary:hover {
+            background-color: #2980b9;
+            border-color: #2980b9;
         }
         #loading {
-            display: none;  /* Hidden by default */
+            display: none;
             text-align: center;
             margin-top: 20px;
         }
         .two-column {
-            display: none;  /* Hidden by default, shown when analysis is done */
+            display: none;
             margin-top: 30px;
-            height: 800px;  /* Set a fixed height for the split-screen layout */
+            height: 800px;
         }
         .poem-column, .result-column {
-            height: 100%;  /* Make sure both columns take up full height */
-            overflow-y: scroll;  /* Enable vertical scrolling */
+            height: 100%;
+            overflow-y: scroll;
         }
         .poem-column {
             border-right: 1px solid #ddd;
@@ -57,22 +91,32 @@
             border-radius: 5px;
             transition: width 0.5s ease-in-out;
         }
-        .navbar {
-            margin-bottom: 30px;
-        }
     </style>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <meta name="description" content="DeepSonnet AI - Advanced poem analysis using artificial intelligence. Uncover themes, sentiment, and style in your poetry.">
-    <meta name="keywords" content="DeepSonnet, AI, poem analysis, poetry, artificial intelligence">
+    
+    <!-- Add structured data for rich snippets -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "DeepSonnet AI",
+      "description": "Advanced poem analysis using artificial intelligence",
+      "url": "https://www.deepsonnetai.com",
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0"
+      }
+    }
+    </script>
 </head>
 <body>
-    <!-- Add this navigation bar just after the <body> tag -->
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="#">DeepSonnet AI</a>
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item" id="leaderboard-nav-item">
-                    <a class="nav-link btn btn-outline-primary" href="{{ url_for('leaderboard') }}">
+                    <a class="nav-link btn btn-outline-light" href="{{ url_for('leaderboard') }}">
                         <i class="fas fa-trophy"></i> Top Rated Poems
                     </a>
                 </li>
@@ -81,11 +125,11 @@
     </nav>
 
     <div class="container">
-        <!-- Form for poem submission -->
-        <h2 class="text-center mb-3">Analyze Your Poem</h2>
+        <h1 class="text-center mb-3">DeepSonnet AI - Poem Analyzer</h1>
         <p class="text-center mb-4">Uncover the depths of your poetry with AI-powered analysis</p>
+        
+        <!-- Form for poem submission -->
         <form id="poem-form">
-            <!-- The new button will be inserted here -->
             <div class="form-group">
                 <label for="poem_title">Poem Title:</label>
                 <input type="text" id="poem_title" name="poem_title" class="form-control" value="Untitled">
@@ -148,6 +192,13 @@
                 </div>
             </div>
         </div>
+
+        <!-- Move the About section here, after the analysis container -->
+        <section class="mt-5 mb-5" id="about-section">
+            <h2>About DeepSonnet AI</h2>
+            <p>DeepSonnet AI is a cutting-edge artificial intelligence tool designed to analyze poems. Our advanced algorithms can detect sentiment, identify themes, recognize poetic styles, and much more.</p>
+            <a href="{{ url_for('about') }}" class="btn btn-info">Learn More About DeepSonnet AI</a>
+        </section>
     </div>
 
     <!-- Link to local jQuery, Popper.js, Bootstrap JS, and custom.js -->
@@ -196,8 +247,18 @@
 
             $('#back-button').click(function() {
                 $('.two-column').hide();
+                $('#about-section').show();
+            });
+
+            // Add this to hide the about section when analyzing a poem
+            $('#poem-form').submit(function(e) {
+                // ... (existing submit handler code) ...
+                $('#about-section').hide();
             });
         });
     </script>
+
+    <!-- Remove the button at the bottom of the page -->
+    <!-- The "Learn More" link in the About section now serves this purpose -->
 </body>
 </html>

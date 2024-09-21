@@ -35,6 +35,12 @@ But we'll leave you flat on your back`;
         console.log("DeepSonnet AI: Using test poem for analysis.");
     }
 
+    // Hide all elements except loading
+    document.getElementById('poem-form').style.display = 'none';
+    document.getElementById('leaderboard-nav-item').style.display = 'none';
+    document.querySelector('.container > h2').style.display = 'none';
+    document.querySelector('.container > p').style.display = 'none';
+
     // Show the loading spinner
     document.getElementById('loading').style.display = 'block';
 
@@ -111,8 +117,11 @@ document.getElementById('back-button').addEventListener('click', function() {
     // Hide the two-column layout
     document.getElementById('analysis-container').style.display = 'none';
 
-    // Show the form again
+    // Show all elements again
     document.getElementById('poem-form').style.display = 'block';
+    document.getElementById('leaderboard-nav-item').style.display = 'block';
+    document.querySelector('.container > h2').style.display = 'block';
+    document.querySelector('.container > p').style.display = 'block';
 
     // Clear the result content and the displayed poem (optional)
     document.getElementById('result').innerHTML = '';
