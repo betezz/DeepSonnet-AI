@@ -35,17 +35,18 @@ But we'll leave you flat on your back`;
         console.log("DeepSonnet AI: Using test poem for analysis.");
     }
 
-    // Show the loading spinner
-    document.getElementById('loading').style.display = 'block';
+    // Show the loading spinner and hide main content
+    document.getElementById('loading').style.display = 'flex';
+    document.getElementById('main-content').style.display = 'none';
 
     // Clear previous result
     document.getElementById('result').innerHTML = '';
 
-    // Hide the form during analysis
-    document.getElementById('poem-form').style.display = 'none';
-
     // Hide the leaderboard button
     document.getElementById('leaderboard-nav-item').style.display = 'none';
+
+    // Remove this line:
+    // document.getElementById('back-button').style.display = 'block';
 
     fetch('/analyze_poem', {
         method: 'POST',
@@ -90,16 +91,23 @@ But we'll leave you flat on your back`;
 
         // Show the leaderboard button again
         document.getElementById('leaderboard-nav-item').style.display = 'block';
+
+        // Show the back button after analysis is complete
+        document.getElementById('back-button').style.display = 'block';
     })
     .catch(error => {
         // Hide the loading spinner and show error
         document.getElementById('loading').style.display = 'none';
+        document.getElementById('main-content').style.display = 'block';
         document.getElementById('result').innerHTML = `
             <h3 class="text-danger">Error:</h3>
             <p>Failed to analyze the poem. Error details:</p>
             <pre>${error.message}\n\nStack trace:\n${error.stack}</pre>
         `;
         console.error('Error:', error);
+
+        // Make sure the back button is hidden in case of error
+        document.getElementById('back-button').style.display = 'none';
 
         // Show the leaderboard button again in case of error
         document.getElementById('leaderboard-nav-item').style.display = 'block';
@@ -111,8 +119,11 @@ document.getElementById('back-button').addEventListener('click', function() {
     // Hide the two-column layout
     document.getElementById('analysis-container').style.display = 'none';
 
-    // Show the form again
-    document.getElementById('poem-form').style.display = 'block';
+    // Show the main content again
+    document.getElementById('main-content').style.display = 'block';
+
+    // Hide the back button
+    document.getElementById('back-button').style.display = 'none';
 
     // Clear the result content and the displayed poem (optional)
     document.getElementById('result').innerHTML = '';
@@ -173,7 +184,6 @@ function extractSentimentScore(result) {
     return 50; // Placeholder value
 }
 
-// Add these functions
 function fetchRandomPoem() {
     fetch('/get_random_poem')
         .then(response => response.json())
@@ -223,7 +233,6 @@ function submitRating(poemId, rating) {
 // Call this when the page loads
 document.addEventListener('DOMContentLoaded', fetchRandomPoem);
 
-// Add this function
 function useTestPoem() {
     document.getElementById('poem_title').value = "Test Poem";
     document.getElementById('poem_text').value = "<test>";
@@ -231,10 +240,9 @@ function useTestPoem() {
 
 // Add this to your document ready function
 $(document).ready(function() {
-    // ... existing code ...
-
     // Add a button to use the test poem
-    $('#poem-form').prepend('<button type="button" onclick="useTestPoem()">Use Test Poem</button>');
+    $('#poem-form').prepend('<button type="button" class="btn btn-secondary mb-3" onclick="useTestPoem()">Use Test Poem</button>');
 
-    // ... rest of your existing code ...
+    // Initially hide the back button (this is redundant now, but keeping for clarity)
+    document.getElementById('back-button').style.display = 'none';
 });

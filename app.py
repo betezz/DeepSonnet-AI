@@ -142,6 +142,16 @@ def get_random_poem():
 def create_tables():
     with app.app_context():
         db.create_all()
+        # Check if the database is empty
+        if Poem.query.count() == 0:
+            # Add some initial poems
+            initial_poems = [
+                Poem(title="Sample Poem 1", author="Author 1", content="This is a sample poem..."),
+                Poem(title="Sample Poem 2", author="Author 2", content="Another sample poem..."),
+                # Add more sample poems as needed
+            ]
+            db.session.add_all(initial_poems)
+            db.session.commit()
 
 if __name__ == '__main__':
     create_tables()  # Call this function before running the app

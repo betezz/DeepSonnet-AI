@@ -140,7 +140,7 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
     }
 
     # Validate analysis_type and get the corresponding system prompt
-    if analysis_type != "king":
+    if analysis_type in prompts:
         system_prompt = prompts.get(analysis_type)
         if not system_prompt:
             raise ValueError(f"Invalid analysis type '{analysis_type}'. Supported types are: 'sentiment', 'themes', 'style', 'rhyme', 'meter', 's', 't', 'st', 'r', 'm'.")
@@ -186,7 +186,10 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
             print(f"Error in API call: {str(e)}")
             raise RuntimeError(f"An error occurred while analyzing the poem: {str(e)}")
     else: 
-        return format_analysis_result(king_analysis(client, poem_text, poem_title))
+        king_result = king_analysis(client, poem_text, poem_title, analysis_type)
+        formatted_result = format_analysis_result(king_result['result'], king_result['analysis_type'])
+        score = calculate_poem_score(client, poem_text, poem_title)
+        return {'result': formatted_result, 'score': score}
     
 def calculate_poem_score(client, poem_text, poem_title):
     system_prompt = (
@@ -231,7 +234,7 @@ def calculate_poem_score(client, poem_text, poem_title):
         print(f"Error in calculate_poem_score: {str(e)}")
         # Return a default score in case of error
         return 50
-def king_analysis(client, poem_text, poem_title):
+def king_analysis(client, poem_text, poem_title, analysis_type):
     # Use concurrent.futures to run analyses in parallel
     with concurrent.futures.ThreadPoolExecutor() as executor:
         rhyme_future = executor.submit(king_rhyme_scheme, client, poem_text)
@@ -242,13 +245,14 @@ def king_analysis(client, poem_text, poem_title):
         poem_meter = meter_future.result()
         poem_analysis = theme_future.result()
 
-    total = {
-        "Rhyme Scheme": rhyme_scheme,
-        "Poem Meter": poem_meter,
-        "Poem Analysis": poem_analysis
+    return {
+        "result": {
+            "Rhyme Scheme": rhyme_scheme,
+            "Poem Meter": poem_meter,
+            "Poem Analysis": poem_analysis
+        },
+        "analysis_type": analysis_type
     }
-
-    return total
     
     
 pronouncing_dict = None #cmudict.dict()
