@@ -3,13 +3,69 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Poem Leaderboard</title>
+    <title>DeepSonnet AI - Top Rated Poems</title>
+    <meta name="description" content="Explore the highest-rated poems analyzed by DeepSonnet AI. Our leaderboard showcases the best in AI-analyzed poetry.">
+    <link rel="icon" href="{{ url_for('static', filename='images/deepsonnet_favicon.ico') }}" type="image/x-icon">
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <style>
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .container {
+            max-width: 800px;
+            margin-top: 50px;
+        }
+        .navbar {
+            background-color: #3498db;
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem;
+        }
+        .navbar-brand {
+            font-size: 1.5rem;
+            padding-top: 0;
+            padding-bottom: 0;
+            color: #fff;
+        }
+        .navbar .btn-outline-light {
+            padding: 0.25rem 0.5rem;
+            font-size: 1.1rem;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        .table {
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .table thead {
+            background-color: #3498db;
+            color: #fff;
+        }
+        .table-hover tbody tr:hover {
+            background-color: #eaf2f8;
+        }
+    </style>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">DeepSonnet AI</a>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link btn btn-outline-light" href="{{ url_for('index') }}">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
     <div class="container">
-        <h1 class="text-center mb-4">Poem Leaderboard</h1>
-        <table class="table">
+        <h1 class="text-center mb-4">Top Rated Poems</h1>
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th>Rank</th>
@@ -30,6 +86,7 @@
             </tbody>
         </table>
     </div>
+
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 </body>
