@@ -13,7 +13,7 @@ Out here actin' like you're tough.
 Talkin' smack, but can't keep pace,
 You're just background noise in this race.
 
-Your sticks? Weak. Your shots? A joke.
+Your sticks? Weak. Your shots? A joke..
 We torch your D like you're a smoke.
 Watch us rip it—top-shelf, clean—
 Your goalie? Can't even be seen.
