@@ -4,117 +4,96 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DeepSonnet AI - Free AI Poetry Analysis & Poem Analyzer</title>
-
-    <!-- favicon link-->
     <link rel="icon" href="{{ url_for('static', filename='images/deepsonnet_favicon.ico') }}" type="image/x-icon">
-
-    <!-- Link to local Bootstrap CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
         body {
-            font-family: 'Roboto', Arial, sans-serif;
-            background-color: #f0f5ff;
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
             color: #333;
-        }
-        .container {
-            max-width: 900px;
-            margin-top: 30px;
-        }
-        .card {
-            border: none;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            background-color: #ffffff;
-        }
-        .card:hover {
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15);
-        }
-        .btn-primary {
-            background-color: #4a90e2;
-            border-color: #4a90e2;
-            transition: all 0.3s ease;
-        }
-        .btn-primary:hover {
-            background-color: #3a7bc8;
-            border-color: #3a7bc8;
-        }
-        #loading {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(255, 255, 255, 0.8);
-            z-index: 9999;
-        }
-        .spinner-border {
-            width: 3rem;
-            height: 3rem;
-        }
-        .loading-content {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-        }
-        .poem-column, .result-column {
-            height: 600px;
-            overflow-y: auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 2px 4px rgba(0,0,0,.1);
-        }
-        .poem-column {
-            border-right: 1px solid #ddd;
-        }
-        #back-button {
-            display: none;
-            margin-top: 20px;
-        }
-        #sentiment-container {
-            width: 100%;
-            background-color: #f0f0f0;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-        #sentiment-bar {
-            height: 20px;
-            background-color: #4CAF50;
-            border-radius: 5px;
-            transition: width 0.5s ease-in-out;
         }
         .navbar {
             background-color: #4a90e2;
             box-shadow: 0 2px 4px rgba(0,0,0,.1);
         }
         .navbar-brand {
-            font-weight: bold;
+            font-weight: 600;
             color: #ffffff !important;
         }
         .nav-link {
             color: #ffffff !important;
+            font-weight: 400;
         }
-        pre {
-            white-space: pre-wrap;
-            word-wrap: break-word;
+        .container {
+            max-width: 1000px;
+            margin-top: 30px;
         }
-        .feature-icon {
-            font-size: 1.5em;
-            margin-right: 10px;
-            color: #4a90e2;
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+            background-color: #ffffff;
+        }
+        .card:hover {
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+        .btn-primary {
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background-color: #3a7bc8;
+            border-color: #3a7bc8;
+        }
+        .form-control {
+            border-radius: 10px;
+        }
+        .poem-column, .result-column {
+            height: 600px;
+            overflow-y: auto;
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.05);
+        }
+        #sentiment-container {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 10px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+        #sentiment-bar {
+            height: 20px;
+            background-color: #4CAF50;
+            border-radius: 10px;
+            transition: width 0.5s ease-in-out;
         }
         .feature-section {
-            margin-top: 30px;
-            padding: 20px;
-            background-color: #f8f9fa;
-            border-radius: 5px;
+            margin-top: 50px;
+            padding: 30px;
+            background-color: #ffffff;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.05);
+        }
+        .feature-icon {
+            font-size: 2em;
+            margin-right: 15px;
+            color: #4a90e2;
         }
         .feature-item {
-            margin-bottom: 15px;
+            margin-bottom: 25px;
+        }
+        #about-section {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.05);
         }
     </style>
     <meta name="description" content="DeepSonnet AI - Free AI-powered poem analyzer. Uncover themes, sentiment, and style in your poetry with advanced artificial intelligence analysis.">
@@ -135,7 +114,7 @@
     </nav>
 
     <div class="container">
-        <div class="card p-4 mb-4" id="main-content">
+        <div class="card p-5 mb-5" id="main-content">
             <h1 class="text-center mb-4">DeepSonnet AI Poetry Analysis</h1>
             <form id="poem-form">
                 <div class="form-group">
@@ -159,13 +138,13 @@
                     </select>
                 </div>
                 <div class="form-group" style="height: 15px;"></div>
-                <button type="submit" class="btn btn-primary btn-block">Analyze Poem</button>
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Analyze Poem</button>
             </form>
         </div>
 
-        <div id="loading">
-            <div class="loading-content">
-                <div class="spinner-border text-primary" role="status">
+        <div id="loading" style="display: none;">
+            <div class="loading-content text-center">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
                     <span class="sr-only">Loading...</span>
                 </div>
                 <p class="mt-3">DeepSonnet AI is analyzing your poem, please wait...</p>
@@ -215,7 +194,6 @@
             </div>
         </div>
 
-        <!-- Move the About section here, after the analysis container -->
         <section class="mt-5 mb-5" id="about-section">
             <h2>About DeepSonnet AI</h2>
             <p>DeepSonnet AI is a cutting-edge artificial intelligence tool designed to analyze poems. Our advanced algorithms can detect sentiment, identify themes, recognize poetic styles, and much more.</p>
@@ -223,7 +201,6 @@
         </section>
     </div>
 
-    <!-- Link to local jQuery, Popper.js, Bootstrap JS, and custom.js -->
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
     <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>

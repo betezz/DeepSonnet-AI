@@ -3,54 +3,144 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>About DeepSonnet AI - Advanced Poem Analysis Tool</title>
-    <meta name="description" content="Learn more about DeepSonnet AI, our advanced artificial intelligence tool for analyzing poetry. Discover how we use cutting-edge technology to provide insights into poems.">
-    <!-- ... other head elements ... -->
-    <!-- Google Analytics -->
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-CVPYFTK3LT"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
-
-      gtag('config', 'G-CVPYFTK3LT');
-    </script>
+    <title>About DeepSonnet AI - Advanced AI Poetry Analysis Tool | Free Poem Analyzer</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/deepsonnet_favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .navbar {
+            background-color: #4a90e2;
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+        }
+        .navbar-brand {
+            font-weight: 600;
+            color: #ffffff !important;
+        }
+        .nav-link {
+            color: #ffffff !important;
+            font-weight: 400;
+        }
+        .container {
+            max-width: 1000px;
+            margin-top: 30px;
+        }
+        h1, h2 {
+            color: #4a90e2;
+            font-weight: 600;
+        }
+        .section {
+            background-color: #ffffff;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,.05);
+        }
+        .btn-primary {
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background-color: #3a7bc8;
+            border-color: #3a7bc8;
+        }
+        .feature-icon {
+            font-size: 2em;
+            margin-right: 15px;
+            color: #4a90e2;
+        }
+    </style>
+    <meta name="description" content="Discover DeepSonnet AI, the cutting-edge artificial intelligence tool for deep sonnet analysis and comprehensive poetry interpretation. Free AI-powered poem analyzer for students, teachers, and poetry enthusiasts.">
+    <meta name="keywords" content="DeepSonnet AI, AI poetry analysis, deep sonnet analysis, poem analyzer, artificial intelligence poetry, free poetry tool">
+    <link rel="canonical" href="https://www.deepsonnet.com/about">
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
-        <!-- ... navbar content ... -->
+        <div class="container">
+            <a class="navbar-brand" href="/">DeepSonnet AI</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" href="/about">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('leaderboard') }}">Top Rated Poems</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
     </nav>
 
-    <div class="container mt-5">
-        <h1 class="text-center mb-4">About DeepSonnet AI</h1>
+    <main class="container mt-4">
+        <h1 class="text-center mb-5">About DeepSonnet AI: Your Free AI Poetry Analysis Tool</h1>
         
-        <section class="mb-5">
-            <h2>Our Mission</h2>
-            <p>DeepSonnet AI aims to bridge the gap between technology and poetry, offering unprecedented insights into the art of verse through advanced artificial intelligence.</p>
+        <section class="section">
+            <h2>What is DeepSonnet AI?</h2>
+            <p>DeepSonnet AI is a state-of-the-art, free artificial intelligence tool designed for in-depth poetry analysis. Our advanced algorithms provide comprehensive insights into various aspects of poems, including themes, sentiment, style, rhyme scheme, and meter. Whether you're analyzing a classic sonnet or a modern free verse, DeepSonnet AI offers unparalleled depth in its poetry interpretation.</p>
         </section>
 
-        <section class="mb-5">
-            <h2>How It Works</h2>
-            <p>Our AI utilizes state-of-the-art natural language processing to analyze poems across multiple dimensions:</p>
+        <section class="section">
+            <h2>Our Mission: Revolutionizing Poetry Analysis</h2>
+            <p>At DeepSonnet AI, we aim to bridge the gap between traditional literary analysis and cutting-edge technology. Our mission is to make poetry more accessible and understandable to everyone, from students to seasoned literary critics. By leveraging the power of artificial intelligence, we're democratizing deep sonnet analysis and poetry interpretation for all.</p>
+        </section>
+
+        <section class="section">
+            <h2>Key Features of Our AI Poem Analyzer</h2>
             <ul>
-                <li>Sentiment Analysis: Uncover the emotional tone of the poem</li>
-                <li>Theme Identification: Discover the main ideas and motifs</li>
-                <li>Style Recognition: Determine the poetic style and techniques used</li>
-                <li>Rhyme and Meter Analysis: Examine the structural elements of the poem</li>
+                <li><i class="fas fa-robot feature-icon"></i><strong>AI-Powered Deep Sonnet Analysis:</strong> Uncover hidden meanings and structures in sonnets and other poetic forms.</li>
+                <li><i class="fas fa-brain feature-icon"></i><strong>Comprehensive Poetry Interpretation:</strong> Get detailed insights into the poem's overall message and literary devices.</li>
+                <li><i class="fas fa-chart-pie feature-icon"></i><strong>Multiple Analysis Types:</strong> Explore themes, sentiment, style, rhyme scheme, and meter all in one place.</li>
+                <li><i class="fas fa-chart-bar feature-icon"></i><strong>Visual Representations:</strong> Understand complex poetic elements through intuitive visualizations.</li>
+                <li><i class="fas fa-user-friends feature-icon"></i><strong>User-Friendly Interface:</strong> Easily submit and analyze poems with our intuitive design.</li>
+                <li><i class="fas fa-gift feature-icon"></i><strong>Free to Use:</strong> Access advanced AI poetry analysis at no cost.</li>
             </ul>
         </section>
 
-        <section class="mb-5">
-            <h2>Why Choose DeepSonnet AI?</h2>
-            <p>Whether you're a poet seeking feedback, a student studying literature, or an enthusiast exploring the depths of poetry, DeepSonnet AI offers unique insights that can enhance your understanding and appreciation of poetic works.</p>
+        <section class="section">
+            <h2>How DeepSonnet AI Works</h2>
+            <p>DeepSonnet AI utilizes advanced natural language processing and machine learning algorithms to analyze poems. Our system breaks down each poem into its constituent parts, examining everything from individual word choices to overall structure and thematic elements. This deep analysis allows for a comprehensive understanding of the poem, rivaling that of expert human analysis.</p>
         </section>
 
-        <div class="text-center mt-5">
-            <a href="{{ url_for('index') }}" class="btn btn-lg btn-primary">Try DeepSonnet AI Now</a>
-        </div>
-    </div>
+        <section class="section">
+            <h2>Who Can Benefit from Our AI Poetry Tool?</h2>
+            <ul>
+                <li><i class="fas fa-graduation-cap feature-icon"></i><strong>Students:</strong> Gain deeper insights into poetry for better understanding and essay writing.</li>
+                <li><i class="fas fa-chalkboard-teacher feature-icon"></i><strong>Teachers and Educators:</strong> Use as a teaching aid to demonstrate poetic analysis techniques.</li>
+                <li><i class="fas fa-book-open feature-icon"></i><strong>Poetry Enthusiasts:</strong> Enhance your appreciation of poetry with in-depth analysis.</li>
+                <li><i class="fas fa-pen-fancy feature-icon"></i><strong>Writers:</strong> Improve your craft by understanding the intricacies of successful poems.</li>
+                <li><i class="fas fa-university feature-icon"></i><strong>Researchers:</strong> Utilize our tool for digital humanities projects and literary studies.</li>
+            </ul>
+        </section>
 
-    <!-- ... footer and scripts ... -->
+        <section class="section text-center">
+            <h2>Get Started with DeepSonnet AI</h2>
+            <p>Ready to experience the power of AI-driven poetry analysis?</p>
+            <a href="/" class="btn btn-primary btn-lg mt-3">Try DeepSonnet AI Now</a>
+            <p class="mt-3">Our free poem analyzer is just a click away!</p>
+        </section>
+    </main>
+
+    <footer class="bg-light py-4 mt-5">
+        <div class="container">
+            <p class="text-center mb-0">&copy; 2023 DeepSonnet AI. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
 </body>
 </html>

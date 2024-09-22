@@ -35,18 +35,16 @@ But we'll leave you flat on your back`;
         console.log("DeepSonnet AI: Using test poem for analysis.");
     }
 
-    // Show the loading spinner and hide main content
+    // Show the loading spinner and hide everything else
     document.getElementById('loading').style.display = 'flex';
     document.getElementById('main-content').style.display = 'none';
+    document.getElementById('analysis-container').style.display = 'none';
+    document.getElementById('leaderboard-nav-item').style.display = 'none';
+    document.querySelector('.feature-section').style.display = 'none';
+    document.getElementById('about-section').style.display = 'none';
 
     // Clear previous result
     document.getElementById('result').innerHTML = '';
-
-    // Hide the leaderboard button
-    document.getElementById('leaderboard-nav-item').style.display = 'none';
-
-    // Remove this line:
-    // document.getElementById('back-button').style.display = 'block';
 
     fetch('/analyze_poem', {
         method: 'POST',
@@ -64,7 +62,7 @@ But we'll leave you flat on your back`;
         // Hide the loading spinner
         document.getElementById('loading').style.display = 'none';
 
-        // Show the two-column layout
+        // Show the analysis container
         document.getElementById('analysis-container').style.display = 'flex';
 
         // Display the submitted poem on the left
@@ -91,47 +89,27 @@ But we'll leave you flat on your back`;
 
         // Show the leaderboard button again
         document.getElementById('leaderboard-nav-item').style.display = 'block';
-
-        // Show the back button after analysis is complete
-        document.getElementById('back-button').style.display = 'block';
     })
     .catch(error => {
-        // Hide the loading spinner and show error
+        console.error('Error:', error);
         document.getElementById('loading').style.display = 'none';
         document.getElementById('main-content').style.display = 'block';
-        document.getElementById('result').innerHTML = `
-            <h3 class="text-danger">Error:</h3>
-            <p>Failed to analyze the poem. Error details:</p>
-            <pre>${error.message}\n\nStack trace:\n${error.stack}</pre>
-        `;
-        console.error('Error:', error);
-
-        // Make sure the back button is hidden in case of error
-        document.getElementById('back-button').style.display = 'none';
-
-        // Show the leaderboard button again in case of error
-        document.getElementById('leaderboard-nav-item').style.display = 'block';
+        document.getElementById('result').innerHTML = `<h3 class="text-danger">Error:</h3><p>An error occurred while analyzing the poem. Please try again.</p>`;
     });
 });
 
-// Update the back button handler
-document.getElementById('back-button').addEventListener('click', function() {
-    // Hide the two-column layout
-    document.getElementById('analysis-container').style.display = 'none';
-
-    // Show the main content again
+// Add a function to reset the view
+function resetView() {
     document.getElementById('main-content').style.display = 'block';
-
-    // Hide the back button
-    document.getElementById('back-button').style.display = 'none';
-
-    // Clear the result content and the displayed poem (optional)
-    document.getElementById('result').innerHTML = '';
-    document.getElementById('displayed-poem-title').innerText = '';
-    document.getElementById('displayed-poem-text').innerText = '';
-
-    // Show the leaderboard button again
+    document.getElementById('analysis-container').style.display = 'none';
     document.getElementById('leaderboard-nav-item').style.display = 'block';
+    document.querySelector('.feature-section').style.display = 'block';
+    document.getElementById('about-section').style.display = 'block';
+}
+
+// Modify the existing back button functionality
+document.getElementById('back-button').addEventListener('click', function() {
+    resetView();
 });
 
 function visualizePoemStructure() {

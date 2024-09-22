@@ -48,8 +48,7 @@ DeepSonnet AI is an interactive web application that leverages artificial intell
    python app.py
    ```
 
-6. Open your web browser and go to `http://localhost:5000` (or the appropriate port).
-
+6. Open your web browser and go to `http://localhost:5000` (or the appropriate port). Access main branch at 'http://deepsonnet.com'.
 ## Usage
 
 1. Enter a poem title and text in the provided form.
@@ -75,11 +74,11 @@ MIT License
 
 ## Contact
 
-[Boden Moraski] - [bodenmoraski@gmail.com]
+Boden Moraski - bodenmoraski@gmail.com
 
 Project Link: https://github.com/your-username/deepsonnet-ai
 
 ## Acknowledgments
 
-- [Huge thank you to all of the developers at OpenAI, this would have not been possible without you]
-- [Special thinks to Lawson Cale, Johnathan Samar, Benjamin Klick, Mr. Baber, Tom Rush, and of course Trevor "King" Cantlin. You guys have all been great.]
+- Huge thank you to all of the developers at OpenAI, this would have not been possible without you
+- Special thinks to Lawson Cale, Johnathan Samar, Benjamin Klick, Mr. Baber, Tom Rush, and of course Trevor "King" Cantlin. You guys are all been great.
