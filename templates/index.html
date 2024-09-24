@@ -95,6 +95,228 @@
             padding: 30px;
             box-shadow: 0 5px 15px rgba(0,0,0,.05);
         }
+        /* Responsive Design Enhancements */
+
+        /* Mobile Devices (portrait and landscape) */
+        @media (max-width: 575.98px) {
+            /* Navbar adjustments */
+            .navbar-nav {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .navbar-brand {
+                margin-bottom: 15px;
+            }
+
+            /* Feature section adjustments */
+            .feature-section .row {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .feature-item {
+                text-align: center;
+                margin-bottom: 20px;
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            /* Form and buttons adjustments */
+            #poem-form .form-group {
+                width: 100%;
+            }
+
+            .btn-primary, .btn-secondary, .btn-outline-light {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+
+            /* Analysis container adjustments */
+            #analysis-container .col-md-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+
+            /* Poem visualization adjustments */
+            .poem-line {
+                width: 100% !important;
+                margin-bottom: 5px;
+            }
+
+            /* Back button adjustments */
+            #back-button {
+                width: 100%;
+                margin-top: 20px;
+            }
+        }
+
+        /* Tablets */
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            /* Feature section adjustments */
+            .feature-section .row {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-around;
+            }
+
+            .feature-item {
+                flex: 0 0 45%;
+                text-align: left;
+                margin-bottom: 20px;
+            }
+
+            /* Analysis container adjustments */
+            #analysis-container .col-md-6 {
+                flex: 0 0 48%;
+                max-width: 48%;
+            }
+
+            /* Button width adjustments */
+            .btn-primary, .btn-secondary, .btn-outline-light {
+                width: auto;
+                margin-bottom: 0;
+            }
+        }
+
+        /* Desktops */
+        @media (min-width: 768px) {
+            /* Feature section adjustments */
+            .feature-section .row {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            .feature-item {
+                flex: 0 0 45%;
+                text-align: left;
+                margin-bottom: 20px;
+            }
+
+            /* Analysis container adjustments */
+            #analysis-container .col-md-6 {
+                flex: 0 0 48%;
+                max-width: 48%;
+            }
+
+            /* Button width adjustments */
+            .btn-primary, .btn-secondary, .btn-outline-light {
+                width: auto;
+            }
+        }
+
+        /* Large Desktops */
+        @media (min-width: 992px) {
+            /* Feature section adjustments */
+            .feature-section .row {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            .feature-item {
+                flex: 0 0 30%;
+                text-align: left;
+                margin-bottom: 20px;
+            }
+
+            /* Analysis container adjustments */
+            #analysis-container .col-md-6 {
+                flex: 0 0 48%;
+                max-width: 48%;
+            }
+        }
+
+        /* Extra Large Desktops */
+        @media (min-width: 1200px) {
+            /* Feature section adjustments */
+            .feature-section .row {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            .feature-item {
+                flex: 0 0 30%;
+                text-align: left;
+                margin-bottom: 20px;
+            }
+
+            /* Analysis container adjustments */
+            #analysis-container .col-md-6 {
+                flex: 0 0 48%;
+                max-width: 48%;
+            }
+        }
+
+        /* General Enhancements */
+        .poem-lines {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .poem-line {
+            background-color: #4a90e2;
+            color: #fff;
+            text-align: center;
+            border-radius: 5px;
+            padding: 5px 0;
+        }
+
+        @media (max-width: 575.98px) {
+            .poem-lines {
+                justify-content: center;
+            }
+        }
+
+        @media (min-width: 576px) {
+            .poem-lines {
+                justify-content: flex-start;
+            }
+        }
+
+        /* Add Dark Mode Styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #e0e0e0;
+        }
+
+        .dark-mode .navbar {
+            background-color: #1f1f1f;
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-mode .card {
+            background-color: #1f1f1f;
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .dark-mode .form-control {
+            background-color: #2c2c2c;
+            color: #e0e0e0;
+            border-color: #444444;
+        }
+
+        .dark-mode .btn-primary {
+            background-color: #3a7bc8;
+            border-color: #3a7bc8;
+        }
+
+        .dark-mode .btn-outline-light {
+            background-color: #3a7bc8;
+            color: #ffffff;
+            border-color: #ffffff;
+        }
+
+        .dark-mode .btn-outline-light:hover {
+            background-color: #2a5aa8;
+            border-color: #2a5aa8;
+            color: #ffffff;
+        }
+
+        /* Adjust other elements as needed for dark mode */
     </style>
     <meta name="description" content="DeepSonnet AI - Free AI-powered poem analyzer. Uncover themes, sentiment, and style in your poetry with advanced artificial intelligence analysis.">
     <meta name="keywords" content="DeepSonnet, AI Poetry Analysis, Poem Analyzer Free, Deep Sonnet AI, poetry analysis, artificial intelligence">
@@ -102,14 +324,27 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="#">DeepSonnet AI</a>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item" id="leaderboard-nav-item">
-                    <a class="nav-link btn btn-outline-light" href="{{ url_for('leaderboard') }}">
-                        <i class="fas fa-trophy"></i> Top Rated Poems
-                    </a>
-                </li>
-            </ul>
+            <a class="navbar-brand" href="{{ url_for('index') }}">DeepSonnet AI</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('leaderboard') }}">Top Rated Poems</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about') }}">About</a>
+                    </li>
+                    <!-- Dark Mode Toggle -->
+                    <li class="nav-item ms-3">
+                        <button id="dark-mode-toggle" class="btn btn-outline-light">
+                            <i class="fas fa-moon"></i> Dark Mode
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
@@ -124,6 +359,10 @@
                 <div class="form-group">
                     <label for="poem_text">Poem Text:</label>
                     <textarea id="poem_text" name="poem_text" rows="10" class="form-control"></textarea>
+                    <!-- Word and Character Counter -->
+                    <div id="word-char-counter" class="mt-2 text-end text-muted">
+                        Words: 0 | Characters: 0
+                    </div>
                 </div>
                 <div class="form-group">
                     <label for="analysis_type">Analysis Type:</label>

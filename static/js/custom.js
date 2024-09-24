@@ -224,3 +224,56 @@ $(document).ready(function() {
     // Initially hide the back button (this is redundant now, but keeping for clarity)
     document.getElementById('back-button').style.display = 'none';
 });
+
+/* Dark Mode Toggle Functionality */
+document.getElementById('dark-mode-toggle').addEventListener('click', function() {
+    document.body.classList.toggle('dark-mode');
+
+    // Update the toggle button icon and text
+    const toggleButton = document.getElementById('dark-mode-toggle');
+    if (document.body.classList.contains('dark-mode')) {
+        toggleButton.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+    } else {
+        toggleButton.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+    }
+
+    // Optional: Save user preference in localStorage
+    if (document.body.classList.contains('dark-mode')) {
+        localStorage.setItem('darkMode', 'enabled');
+    } else {
+        localStorage.setItem('darkMode', 'disabled');
+    }
+});
+
+/* Apply Dark Mode based on user preference */
+document.addEventListener('DOMContentLoaded', function() {
+    const darkMode = localStorage.getItem('darkMode');
+    if (darkMode === 'enabled') {
+        document.body.classList.add('dark-mode');
+        document.getElementById('dark-mode-toggle').innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+    } else {
+        document.getElementById('dark-mode-toggle').innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+    }
+});
+
+/* Word and Character Counter Functionality */
+document.addEventListener('DOMContentLoaded', function() {
+    const poemTextArea = document.getElementById('poem_text');
+    const counterDisplay = document.getElementById('word-char-counter');
+
+    if (poemTextArea && counterDisplay) {
+        poemTextArea.addEventListener('input', function() {
+            const text = poemTextArea.value;
+            const wordCount = countWords(text);
+            const charCount = text.length;
+            counterDisplay.textContent = `Words: ${wordCount} | Characters: ${charCount}`;
+        });
+    }
+});
+
+// Helper function to count words
+function countWords(str) {
+    return str.trim().split(/\s+/).filter(function(word) {
+        return word.length > 0;
+    }).length;
+}
