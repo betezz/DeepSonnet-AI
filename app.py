@@ -64,8 +64,10 @@ def index():
 
 @app.route('/analyze_poem', methods=['POST'])
 def analyze_poem_endpoint():
+    app.logger.info("Received analyze_poem request")
     try:
         data = request.json
+        app.logger.info(f"Request data: {data}")
         poem_text = data.get('poem_text')
         poem_title = data.get('poem_title', 'Untitled')
         analysis_type = data.get('analysis_type', 'sentiment')
@@ -111,7 +113,7 @@ def analyze_poem_endpoint():
         return jsonify({'result': result['result'], 'score': score})
 
     except Exception as e:
-        app.logger.error(f"Error in analyze_poem_endpoint: {str(e)}")
+        app.logger.error(f"Error in analyze_poem_endpoint: {str(e)}", exc_info=True)
         return jsonify({'error': f"An error occurred: {str(e)}"}), 500
 
 @app.route('/leaderboard')
