@@ -24,7 +24,7 @@ DeepSonnet AI is an interactive web application that leverages artificial intell
 - Backend: Python with Flask, Render for hosting
 - AI/ML: OpenAI API, NLTK for NLP tasks
 
-## Setup and Installation
+## Setup and Installation for editing
 
 1. Clone the repository:
    ```
@@ -48,7 +48,7 @@ DeepSonnet AI is an interactive web application that leverages artificial intell
    python app.py
    ```
 
-6. Open your web browser and go to `http://localhost:5000` (or the appropriate port). Access main branch at 'http://deepsonnet.com'.
+6. Open your web browser and go to `http://localhost:5000` (or the appropriate port). You can always access the main branch at 'http://deepsonnet.com'.
 ## Usage
 
 1. Enter a poem title and text in the provided form.
