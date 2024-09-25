@@ -76,9 +76,9 @@ MIT License
 
 Boden Moraski - bodenmoraski@gmail.com
 
-Project Link: https://github.com/your-username/deepsonnet-ai
+Project Link: https://github.com/betezz/DeepSonnet-AI
 
 ## Acknowledgments
 
-- Huge thank you to all of the developers at OpenAI, this would have not been possible without you
-- Special thinks to Lawson Cale, Johnathan Samar, Benjamin Klick, Mr. Baber, Tom Rush, and of course Trevor "King" Cantlin. You guys are all been great.
+- Huge thank you to all of the developers at OpenAI, this would not have been possible without you
+- Special thanks to Lawson Cale, Johnathan Samar, Benjamin Klick, Mr. Baber, Tom Rush, and of course Trevor "King" Cantlin. You guys have all been great.
