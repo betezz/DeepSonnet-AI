@@ -156,6 +156,13 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
         # Make the API call and return the response
         if analysis_type == "general":
             max_toks = 1000
+            # Add detailed analysis for each word
+            words = poem_text.split()
+            word_details = {}
+            for word in words:
+                word_details[word] = {
+                    "poetic_device": identify_poetic_device(word, poem_text)
+                }
         else:
             max_toks = 600
             
@@ -179,7 +186,10 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
             formatted_result = format_analysis_result(result, analysis_type)
 
             # Return both the analysis result and the score
-            return {'result': formatted_result, 'score': score}
+            if analysis_type == "general":
+                return {'result': formatted_result, 'score': score, 'word_details': word_details}
+            else:
+                return {'result': formatted_result, 'score': score}
 
         except Exception as e:
             # Handle API errors gracefully
@@ -254,18 +264,7 @@ def king_analysis(client, poem_text, poem_title, analysis_type):
         "analysis_type": analysis_type
     }
     
-    
-pronouncing_dict = None #cmudict.dict()
-
-def get_rhyme_sound(word):
-    """Extract the stressed vowel and following sounds."""
-    word = word.lower().strip(string.punctuation)
-    if word in pronouncing_dict:
-        pronunciation = pronouncing_dict[word][0]
-        for i in reversed(range(len(pronunciation))):
-            if any(char.isdigit() for char in pronunciation[i]):
-                return pronunciation[i:]
-    return None
+'''
 
 def is_slant_rhyme(sound1, sound2, threshold=2):
     """Determine if two phonetic transcriptions are close enough to be considered slant rhymes."""
@@ -282,15 +281,17 @@ def get_best_pronunciation(word):
     best_score = float('inf')
     best_pronunciation = None
     for pronunciation in pronunciations:
-        '''
+
         
         for known_pron in unique_sounds:
             score = edit_distance(pronunciation, known_pron)
             if score < best_score:
                 best_score = score
                 best_pronunciation = pronunciation
-        '''
+
     return best_pronunciation
+    
+'''
 
 def king_rhyme_scheme(client, poem_text):
     #ensure_nltk_data()
@@ -463,12 +464,18 @@ def format_analysis_result(result, analysis_type):
     - str: The formatted analysis as HTML
     """
     def markdown_to_html(text):
+        # Convert ### headings to <h3> tags
+        text = re.sub(r'^###\s*(.*?)$', r'<h3>\1</h3>', text, flags=re.MULTILINE)
+        
         # Convert **bold** to <strong>bold</strong>
         text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
+        
         # Convert *italic* to <em>italic</em>
         text = re.sub(r'\*(.*?)\*', r'<em>\1</em>', text)
+        
         # Convert newlines to <br> tags
         text = text.replace('\n', '<br>')
+        
         return text
 
     if analysis_type == "king":
@@ -481,3 +488,11 @@ def format_analysis_result(result, analysis_type):
         formatted_output = f"<h3>{analysis_type.capitalize()} Analysis</h3><p>{markdown_to_html(result)}</p>"
 
     return formatted_output
+
+def identify_poetic_device(word, poem_text):
+    # Simple identification of alliteration and assonance
+    if poem_text.lower().count(word[0].lower()) > 2:
+        return "alliteration"
+    elif any(poem_text.lower().count(vowel) > 3 for vowel in 'aeiou' if vowel in word.lower()):
+        return "assonance"
+    return "none"

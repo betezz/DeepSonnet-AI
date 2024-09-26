@@ -110,7 +110,11 @@ def analyze_poem_endpoint():
             result = analysis_future.result()
             score = score_future.result()
 
-        return jsonify({'result': result['result'], 'score': score})
+        response_data = {'result': result['result'], 'score': score}
+        if 'word_details' in result:
+            response_data['word_details'] = result['word_details']
+
+        return jsonify(response_data)
 
     except Exception as e:
         app.logger.error(f"Error in analyze_poem_endpoint: {str(e)}", exc_info=True)

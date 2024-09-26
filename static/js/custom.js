@@ -91,6 +91,8 @@ But we'll leave you flat on your back`;
             }
 
             visualizePoemStructure();
+
+            displayAnalysisResult(data);
         })
         .catch(error => {
             console.error('Error:', error);
@@ -267,6 +269,66 @@ But we'll leave you flat on your back`;
         return str.trim().split(/\s+/).filter(function(word) {
             return word.length > 0;
         }).length;
+    }
+
+    function displayAnalysisResult(data) {
+        console.log("Analysis data:", data);
+        if (data.word_details) {
+            const poemDisplay = document.getElementById('displayed-poem-text');
+            const lines = poemDisplay.innerText.split('\n');
+            
+            poemDisplay.innerHTML = lines.map(line => {
+                const words = line.split(/\s+/);
+                const formattedWords = words.map(word => {
+                    const details = data.word_details[word] || {};
+                    const deviceClass = details.poetic_device || 'none';
+                    return `<span class="word ${deviceClass}">${word}</span>`;
+                }).join(' ');
+                return `<div class="poem-line">${formattedWords}</div>`;
+            }).join('\n');
+
+            // Add event listeners for hover
+            poemDisplay.querySelectorAll('.word').forEach(wordSpan => {
+                wordSpan.addEventListener('mouseover', showWordDetails);
+                wordSpan.addEventListener('mouseout', hideWordDetails);
+            });
+
+            // Add legend
+            addLegend();
+        }
+    }
+
+    function showWordDetails(event) {
+        const word = event.target;
+        const device = word.className.split(' ')[1];
+
+        const tooltip = document.createElement('div');
+        tooltip.className = 'tooltip';
+        tooltip.innerHTML = `
+            <strong>Word:</strong> ${word.innerText}<br>
+            <strong>Poetic Device:</strong> ${device}
+        `;
+
+        word.appendChild(tooltip);
+    }
+
+    function hideWordDetails(event) {
+        const tooltip = event.target.querySelector('.tooltip');
+        if (tooltip) {
+            tooltip.remove();
+        }
+    }
+
+    function addLegend() {
+        const legend = document.createElement('div');
+        legend.id = 'legend';
+        legend.innerHTML = `
+            <h5>Legend:</h5>
+            <span class="alliteration">Alliteration</span>
+            <span class="assonance">Assonance</span>
+            <span class="none">No specific device</span>
+        `;
+        document.getElementById('analysis-container').appendChild(legend);
     }
 } catch (error) {
     console.error("An error occurred in the JavaScript:", error);
