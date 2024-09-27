@@ -219,34 +219,45 @@ But we'll leave you flat on your back`;
     */
 
     /* Dark Mode Toggle Functionality */
-    document.getElementById('dark-mode-toggle').addEventListener('click', function() {
+    function toggleDarkMode() {
         document.body.classList.toggle('dark-mode');
+        const isDarkMode = document.body.classList.contains('dark-mode');
+        localStorage.setItem('darkMode', isDarkMode ? 'enabled' : 'disabled');
+        updateDarkModeButton(isDarkMode);
+    }
 
-        // Update the toggle button icon and text
+    function updateDarkModeButton(isDarkMode) {
         const toggleButton = document.getElementById('dark-mode-toggle');
-        if (document.body.classList.contains('dark-mode')) {
-            toggleButton.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-        } else {
-            toggleButton.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+        if (toggleButton) {
+            if (isDarkMode) {
+                toggleButton.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
+            } else {
+                toggleButton.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+            }
         }
+    }
 
-        // Optional: Save user preference in localStorage
-        if (document.body.classList.contains('dark-mode')) {
-            localStorage.setItem('darkMode', 'enabled');
-        } else {
-            localStorage.setItem('darkMode', 'disabled');
-        }
-    });
-
-    /* Apply Dark Mode based on user preference */
-    document.addEventListener('DOMContentLoaded', function() {
+    function applyDarkMode() {
         const darkMode = localStorage.getItem('darkMode');
         if (darkMode === 'enabled') {
             document.body.classList.add('dark-mode');
-            document.getElementById('dark-mode-toggle').innerHTML = '<i class="fas fa-sun"></i> Light Mode';
         } else {
-            document.getElementById('dark-mode-toggle').innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
+            document.body.classList.remove('dark-mode');
         }
+        updateDarkModeButton(darkMode === 'enabled');
+    }
+
+    // Apply dark mode when the DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        applyDarkMode();
+
+        // Add event listener to dark mode toggle button if it exists
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        if (darkModeToggle) {
+            darkModeToggle.addEventListener('click', toggleDarkMode);
+        }
+
+        // Rest of your DOMContentLoaded code...
     });
 
     /* Word and Character Counter Functionality */

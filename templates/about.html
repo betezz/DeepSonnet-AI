@@ -66,11 +66,12 @@
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="/">DeepSonnet AI</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ml-auto">
+                <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="/">Home</a>
                     </li>
@@ -79,6 +80,12 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('leaderboard') }}">Top Rated Poems</a>
+                    </li>
+                    <!-- Dark Mode Toggle -->
+                    <li class="nav-item ms-3">
+                        <button id="dark-mode-toggle" class="btn btn-outline-light">
+                            <i class="fas fa-moon"></i> Dark Mode
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -141,6 +148,7 @@
     </footer>
 
     <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
 </body>
 </html>

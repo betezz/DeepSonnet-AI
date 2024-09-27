@@ -6,7 +6,6 @@ from nltk.corpus import cmudict
 import ssl
 from openai import OpenAI
 from example import initialize_openai_client, analyze_poem, calculate_poem_score # ensure_nltk_data Import the functions from your example.py
-from poems import get_poem
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
