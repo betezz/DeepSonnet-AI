@@ -9,7 +9,7 @@ try {
         // Check if the test poem is requested
         if (poemText.trim() === "<test>") {
             poemTitle = "Malvern Prep March";
-            poemText = `Yo Laville, you're soft as fluff,
+            poemText = `Yo Lawrenceville, you're soft as fluff,
 Out here actin' like you're tough.
 Talkin' smack, but can't keep pace,
 You're just background noise in this race.
@@ -287,13 +287,14 @@ But we'll leave you flat on your back`;
         if (data.word_details) {
             const poemDisplay = document.getElementById('displayed-poem-text');
             const lines = poemDisplay.innerText.split('\n');
-            
             poemDisplay.innerHTML = lines.map(line => {
-                const words = line.split(/\s+/);
+                const words = line.split(' ');
                 const formattedWords = words.map(word => {
-                    const details = data.word_details[word] || {};
-                    const deviceClass = details.poetic_device || 'none';
-                    return `<span class="word ${deviceClass}">${word}</span>`;
+                    const details = data.word_details[word.toLowerCase()] || { poetic_device: 'none' };
+                    if (details.poetic_device !== 'none') {
+                        return `<span class="word ${details.poetic_device}">${word}</span>`;
+                    }
+                    return word; // Return the word without wrapping if no poetic device
                 }).join(' ');
                 return `<div class="poem-line">${formattedWords}</div>`;
             }).join('\n');

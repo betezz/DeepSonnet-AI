@@ -9,6 +9,7 @@ import concurrent.futures
 import re
 from difflib import SequenceMatcher
 import string
+import itertools
 
 load_dotenv()
 api_key = os.getenv('OPENAI_API_KEY')
@@ -157,12 +158,14 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
         if analysis_type == "general":
             max_toks = 1000
             # Add detailed analysis for each word
-            words = poem_text.split()
+            lines = poem_text.split('\n')
             word_details = {}
-            for word in words:
-                word_details[word] = {
-                    "poetic_device": identify_poetic_device(word, poem_text)
-                }
+            for i, line in enumerate(lines):
+                words = line.split()
+                for word in words:
+                    word_details[word] = {
+                        "poetic_device": identify_poetic_device(word, line, lines[i-1] if i > 0 else None)
+                    }
         else:
             max_toks = 600
             
@@ -489,10 +492,45 @@ def format_analysis_result(result, analysis_type):
 
     return formatted_output
 
-def identify_poetic_device(word, poem_text):
-    # Simple identification of alliteration and assonance
-    if poem_text.lower().count(word[0].lower()) > 2:
+def identify_poetic_device(word, line, prev_line=None):
+    def consecutive_alliteration(words):
+        count = 1
+        for i in range(1, len(words)):
+            if words[i][0].lower() == words[i-1][0].lower() and words[i][0].lower() not in 'aeiou':
+                count += 1
+                if count >= 2:
+                    return True
+            else:
+                count = 1
+        return False
+
+    def consecutive_assonance(words):
+        def word_vowels(word):
+            return ''.join([char for char in word if char.lower() in 'aeiou'])
+
+        count = 1
+        for i in range(1, len(words)):
+            if word_vowels(words[i]) == word_vowels(words[i-1]) and word_vowels(words[i]):
+                count += 1
+                if count >= 2:
+                    return True
+            else:
+                count = 1
+        return False
+
+    words = line.lower().split()
+    word_index = words.index(word.lower())
+
+    # Check for alliteration
+    if word_index > 0 and consecutive_alliteration(words[word_index-1:word_index+1]):
         return "alliteration"
-    elif any(poem_text.lower().count(vowel) > 3 for vowel in 'aeiou' if vowel in word.lower()):
+    elif word_index < len(words) - 1 and consecutive_alliteration(words[word_index:word_index+2]):
+        return "alliteration"
+
+    # Check for assonance
+    if word_index > 0 and consecutive_assonance(words[word_index-1:word_index+1]):
         return "assonance"
+    elif word_index < len(words) - 1 and consecutive_assonance(words[word_index:word_index+2]):
+        return "assonance"
+
     return "none"

@@ -258,9 +258,9 @@
         }
 
         .poem-line {
-            background-color: #4a90e2;
-            color: #fff;
-            text-align: center;
+            background-color: #ffffff00;
+            color: #000000;
+            text-align: left;
             border-radius: 5px;
             padding: 5px 0;
         }
@@ -408,15 +408,19 @@
         #displayed-poem-text {
             white-space: pre-wrap;
             word-wrap: break-word;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+            background-color: inherit;
         }
 
         .poem-line {
             margin-bottom: 10px;
         }
 
-        .word {
-            display: inline-block;
-            margin-right: 4px;
+        /* Remove any background colors or additional styling for poem lines */
+        .dark-mode .poem-line {
+            background-color: inherit;
         }
     </style>
     <meta name="description" content="DeepSonnet AI - Free AI-powered poem analyzer. Uncover themes, sentiment, and style in your poetry with advanced artificial intelligence analysis.">
