@@ -422,6 +422,15 @@
         .dark-mode .poem-line {
             background-color: inherit;
         }
+
+        #loading {
+            display: none;
+            position: fixed; /* Added to position it relative to the viewport */
+            top: 50%; /* Center vertically */
+            left: 50%; /* Center horizontally */
+            transform: translate(-50%, -50%); /* Adjust position to truly center */
+            z-index: 1000; /* Ensure it appears above other content */
+        }
     </style>
     <meta name="description" content="DeepSonnet AI - Free AI-powered poem analyzer. Uncover themes, sentiment, and style in your poetry with advanced artificial intelligence analysis.">
     <meta name="keywords" content="DeepSonnet, AI Poetry Analysis, Poem Analyzer Free, Deep Sonnet AI, poetry analysis, artificial intelligence">

@@ -470,6 +470,9 @@ def format_analysis_result(result, analysis_type):
         # Convert ### headings to <h3> tags
         text = re.sub(r'^###\s*(.*?)$', r'<h3>\1</h3>', text, flags=re.MULTILINE)
         
+        # Convert # headings to <h4> tags
+        text = re.sub(r'^#\s*(.*?)$', r'<h4>\1</h4>', text, flags=re.MULTILINE)
+        
         # Convert **bold** to <strong>bold</strong>
         text = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
         
