@@ -88,7 +88,7 @@ def analyze_poem(client, poem_text, poem_title, analysis_type):
         "sentiment": (
             "You are an expert in poetry analysis. Begin by identifying the primary sentiment or emotion in each stanza of the following poem, "
             "using specific textual evidence. Then, analyze how these sentiments evolve throughout the poem and contribute to the overall emotional arc and tone. "
-            "Consider any shifts in mood and discuss their potential impact on different readers."
+            "Consider any shifts in mood and discuss their potential impact on different readers. "
         ),
         "s": (
             "You are an expert in poetry analysis. Begin by identifying the primary sentiment or emotion in each stanza of the following poem, "
