@@ -1,15 +1,18 @@
 import os
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, redirect, url_for
 from random import choice
 import nltk
 from nltk.corpus import cmudict
 import ssl
 from openai import OpenAI
-from example import initialize_openai_client, analyze_poem, calculate_poem_score # ensure_nltk_data Import the functions from your example.py
+from example import initialize_openai_client, analyze_poem, calculate_poem_score
+from shortstory import analyze_shortstory, initialize_openai_client as init_shortstory_client
 from flask_cors import CORS
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from concurrent.futures import ThreadPoolExecutor
+import PyPDF2
+import io
 
 # Ensure NLTK resources are downloaded (e.g., for Sentiment Analysis)
 try:
@@ -51,8 +54,9 @@ def update_poem_rating(poem_id, rating):
         poem.num_ratings += 1
         db.session.commit()
 
-# Initialize the OpenAI client
-client = initialize_openai_client()
+# Initialize the OpenAI clients
+poetry_client = initialize_openai_client()
+shortstory_client = init_shortstory_client()
 
 @app.route('/')
 def index():
@@ -60,6 +64,13 @@ def index():
     Render the homepage with the poem analysis form.
     """
     return render_template('index.html')  # Serve index.html from the templates folder
+
+@app.route('/short_story')
+def short_story():
+    """
+    Render the short story analysis page.
+    """
+    return render_template('s-story.html')
 
 @app.route('/analyze_poem', methods=['POST'])
 def analyze_poem_endpoint():
@@ -103,8 +114,8 @@ def analyze_poem_endpoint():
 
         # Use ThreadPoolExecutor to run analysis in parallel
         with ThreadPoolExecutor() as executor:
-            analysis_future = executor.submit(analyze_poem, client, poem_text, poem_title, analysis_type)
-            score_future = executor.submit(calculate_poem_score, client, poem_text, poem_title)
+            analysis_future = executor.submit(analyze_poem, poetry_client, poem_text, poem_title, analysis_type)
+            score_future = executor.submit(calculate_poem_score, poetry_client, poem_text, poem_title)
 
             result = analysis_future.result()
             score = score_future.result()
@@ -119,6 +130,21 @@ def analyze_poem_endpoint():
         app.logger.error(f"Error in analyze_poem_endpoint: {str(e)}", exc_info=True)
         return jsonify({'error': f"An error occurred: {str(e)}"}), 500
 
+@app.route('/analyze_shortstory', methods=['POST'])
+def analyze_shortstory_endpoint():
+    try:
+        data = request.json
+        story_text = data.get('story_text')
+        story_title = data.get('story_title', 'Untitled')
+        analysis_type = data.get('analysis_type', 'general')
+
+        result = analyze_shortstory(shortstory_client, story_text, story_title, analysis_type)
+        return jsonify(result)
+
+    except Exception as e:
+        app.logger.error(f"Error in analyze_shortstory_endpoint: {str(e)}", exc_info=True)
+        return jsonify({'error': f"An error occurred: {str(e)}"}), 500
+
 @app.route('/leaderboard')
 def leaderboard():
     top_poems = fetch_top_poems()
@@ -130,7 +156,7 @@ def submit_rating():
     poem_id = data.get('poem_id')
     rating = data.get('rating')
     # Update the poem's rating in the database
-    update_poem_rating(poem_id, rating)  # Implement this function
+    update_poem_rating(poem_id, rating)
     return jsonify({'success': True})
 
 @app.route('/get_random_poem')
@@ -146,6 +172,17 @@ def get_random_poem():
 @app.route('/about')
 def about():
     return render_template('about.html')
+
+# Function to extract text from PDF
+def extract_text_from_pdf(pdf_stream):
+    try:
+        pdf_reader = PyPDF2.PdfReader(pdf_stream)
+        text = ""
+        for page in pdf_reader.pages:
+            text += page.extract_text() + "\n"
+        return text
+    except Exception as e:
+        raise RuntimeError(f"Failed to extract text from PDF: {str(e)}")
 
 # Add this function to create tables
 def create_tables():
@@ -166,4 +203,3 @@ if __name__ == '__main__':
     create_tables()  # Call this function before running the app
     port = int(os.environ.get('PORT', 5001))
     app.run(debug=True, host='0.0.0.0', port=port)
-

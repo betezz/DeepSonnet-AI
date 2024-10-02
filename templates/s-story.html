@@ -1,0 +1,172 @@
+<!-- DeepSonnet-AI/templates/s-story.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSonnet AI - Free AI Short Story Analysis</title>
+    <link rel="icon" href="{{ url_for('static', filename='images/deepsonnet_favicon.ico') }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        /* Copy all styles from index.html, then update as needed */
+        /* ... (copy all styles from index.html) ... */
+
+        /* Update specific styles for short story analysis */
+        .story-lines {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+
+        .story-line {
+            background-color: #ffffff00;
+            color: #000000;
+            text-align: left;
+            border-radius: 5px;
+            padding: 5px 0;
+        }
+
+        #displayed-story-text {
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            font-family: inherit;
+            font-size: inherit;
+            color: inherit;
+            background-color: inherit;
+        }
+
+        .story-paragraph {
+            margin-bottom: 10px;
+        }
+    </style>
+    <meta name="description" content="DeepSonnet AI - Free AI-powered short story analyzer. Uncover themes, sentiment, and style in your stories with advanced artificial intelligence analysis.">
+    <meta name="keywords" content="DeepSonnet, AI Short Story Analysis, Story Analyzer Free, Deep Sonnet AI, short story analysis, artificial intelligence">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">DeepSonnet AI</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Poetry Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/short_story">Short Story Analysis</a>
+                    </li>
+                    <li class="nav-item" id="leaderboard-nav-item">
+                        <a class="nav-link" href="/leaderboard">Leaderboard</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="dark-mode-toggle">
+                            <i class="fas fa-moon"></i>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card p-5 mb-5" id="main-content">
+            <h1 class="text-center mb-4">DeepSonnet AI Short Story Analysis</h1>
+            <form id="shortstory-form">
+                <div class="form-group">
+                    <label for="story_title">Story Title:</label>
+                    <input type="text" id="story_title" name="story_title" class="form-control" value="Untitled">
+                </div>
+                <div class="form-group">
+                    <label for="story_text">Story Text:</label>
+                    <textarea id="story_text" name="story_text" rows="10" class="form-control"></textarea>
+                    <div id="story-word-char-counter" class="mt-2 text-end text-muted">
+                        Words: 0 | Characters: 0
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="analysis_type">Analysis Type:</label>
+                    <select id="analysis_type" name="analysis_type" class="form-control">
+                        <option value="sentiment">Sentiment</option>
+                        <option value="themes">Themes</option>
+                        <option value="style">Style</option>
+                        <option value="character">Character Analysis</option>
+                        <option value="plot">Plot Analysis</option>
+                        <option value="general">General Analysis</option>
+                    </select>
+                </div>
+                <div class="form-group" style="height: 15px;"></div>
+                <button type="submit" class="btn btn-primary btn-lg btn-block">Analyze Short Story</button>
+            </form>
+        </div>
+
+        <div id="loading" style="display: none;">
+            <div class="loading-content text-center">
+                <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
+                    <span class="sr-only">Loading...</span>
+                </div>
+                <p class="mt-3">DeepSonnet AI is analyzing your short story, please wait...</p>
+            </div>
+        </div>
+
+        <button id="back-button" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i> Back to Form
+        </button>
+
+        <div id="analysis-container" class="row two-column" style="display: none;">
+            <div class="col-md-6 story-column">
+                <h3>Submitted Short Story:</h3>
+                <h5 id="displayed-story-title"></h5>
+                <pre id="displayed-story-text"></pre>
+                <div id="story-visualization" class="mt-4"></div>
+            </div>
+
+            <div class="col-md-6 result-column">
+                <h3>DeepSonnet AI Analysis Result:</h3>
+                <div id="result" class="result"></div>
+                <div id="sentiment-container" class="mt-4"></div>
+                <div id="analysis-highlights" class="mt-4"></div>
+                <div id="theme-cloud" class="mt-4"></div>
+            </div>
+        </div>
+
+        <div class="feature-section">
+            <h2 class="text-center mb-4">Why Choose DeepSonnet AI for Short Story Analysis?</h2>
+            <div class="row">
+                <div class="col-md-6 feature-item">
+                    <i class="fas fa-robot feature-icon"></i>
+                    <strong>Advanced AI Analysis:</strong> Leverage cutting-edge AI for in-depth short story insights.
+                </div>
+                <div class="col-md-6 feature-item">
+                    <i class="fas fa-bolt feature-icon"></i>
+                    <strong>Instant Results:</strong> Get comprehensive analysis in seconds.
+                </div>
+                <div class="col-md-6 feature-item">
+                    <i class="fas fa-chart-bar feature-icon"></i>
+                    <strong>Multiple Analysis Types:</strong> Explore sentiment, themes, style, characters, and plot.
+                </div>
+                <div class="col-md-6 feature-item">
+                    <i class="fas fa-lock feature-icon"></i>
+                    <strong>Free and Secure:</strong> Enjoy our service at no cost, with your privacy protected.
+                </div>
+            </div>
+        </div>
+
+        <section class="mt-5 mb-5" id="about-section">
+            <h2>About DeepSonnet AI Short Story Analysis</h2>
+            <p>DeepSonnet AI's short story analysis tool is a cutting-edge artificial intelligence system designed to analyze short stories. Our advanced algorithms can detect sentiment, identify themes, recognize writing styles, analyze characters, and much more.</p>
+            <a href="{{ url_for('about') }}" class="btn btn-info">Learn More About DeepSonnet AI</a>
+        </section>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="{{ url_for('static', filename='js/shortanalysis.js') }}"></script>
+</body>
+</html>

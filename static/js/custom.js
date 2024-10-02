@@ -102,6 +102,67 @@ But we'll leave you flat on your back`;
         });
     });
 
+    // Add this event listener for the short story form
+    document.addEventListener('DOMContentLoaded', function() {
+        const shortstoryForm = document.getElementById('shortstory-form');
+        if (shortstoryForm) {
+            shortstoryForm.addEventListener('submit', function(event) {
+                event.preventDefault();
+                analyzeShortStory();
+            });
+        }
+    });
+
+    function analyzeShortStory() {
+        // Show loading spinner
+        document.getElementById('loading').style.display = 'flex';
+        document.getElementById('main-content').style.display = 'none';
+
+        let storyTitle = document.getElementById('story_title').value;
+        let storyText = document.getElementById('story_text').value;
+        let analysisType = document.getElementById('analysis_type').value;
+
+        fetch('/analyze_shortstory', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                story_title: storyTitle,
+                story_text: storyText,
+                analysis_type: analysisType
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            // Hide loading spinner
+            document.getElementById('loading').style.display = 'none';
+            // Show analysis container
+            document.getElementById('analysis-container').style.display = 'flex';
+
+            // Display results
+            document.getElementById('displayed-story-title').innerText = storyTitle || 'Untitled';
+            document.getElementById('displayed-story-text').innerText = storyText;
+            document.getElementById('result').innerHTML = data.result;
+
+            // Display sentiment (if available)
+            if (data.sentiment !== undefined) {
+                displaySentiment(data.sentiment);
+            }
+
+            // Display theme cloud (if available)
+            if (data.themes) {
+                displayThemeCloud(data.themes);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('main-content').style.display = 'block';
+            document.getElementById('result').innerHTML = `<h3 class="text-danger">Error:</h3><p>An error occurred while analyzing the short story. Please try again.</p>`;
+        });
+    }
+
     // Add a function to reset the view
     function resetView() {
         document.getElementById('main-content').style.display = 'block';
@@ -342,6 +403,27 @@ But we'll leave you flat on your back`;
         `;
         document.getElementById('analysis-container').appendChild(legend);
     }
+
+    // Add these functions for sentiment and theme cloud display
+    function displaySentiment(sentiment) {
+        const sentimentContainer = document.getElementById('sentiment-container');
+        sentimentContainer.innerHTML = `<h4>Sentiment Analysis</h4><div id="sentiment-bar"></div>`;
+        const sentimentBar = document.getElementById('sentiment-bar');
+        sentimentBar.style.width = `${(sentiment + 1) * 50}%`;
+        sentimentBar.style.backgroundColor = sentiment > 0 ? '#4CAF50' : '#F44336';
+        sentimentBar.innerText = `${(sentiment * 100).toFixed(2)}%`;
+    }
+
+    function displayThemeCloud(themes) {
+        const themeCloud = document.getElementById('theme-cloud');
+        themeCloud.innerHTML = '<h4>Theme Cloud</h4>';
+        themes.forEach(theme => {
+            const themeSpan = document.createElement('span');
+            themeSpan.className = 'theme-tag';
+            themeSpan.innerText = theme;
+            themeCloud.appendChild(themeSpan);
+        });
+    }
 } catch (error) {
     console.error("An error occurred in the JavaScript:", error);
-}
+}   
