@@ -129,7 +129,7 @@ def analyze_poem_endpoint():
     except Exception as e:
         app.logger.error(f"Error in analyze_poem_endpoint: {str(e)}", exc_info=True)
         return jsonify({'error': f"An error occurred: {str(e)}"}), 500
-
+       
 @app.route('/analyze_shortstory', methods=['POST'])
 def analyze_shortstory_endpoint():
     try:
@@ -139,7 +139,7 @@ def analyze_shortstory_endpoint():
         analysis_type = data.get('analysis_type', 'general')
 
         result = analyze_shortstory(shortstory_client, story_text, story_title, analysis_type)
-        return jsonify(result)
+        return jsonify({'result': result})  # Wrap result in a JSON object
 
     except Exception as e:
         app.logger.error(f"Error in analyze_shortstory_endpoint: {str(e)}", exc_info=True)
@@ -198,7 +198,7 @@ def create_tables():
             ]
             db.session.add_all(initial_poems)
             db.session.commit()
-
+       
 if __name__ == '__main__':
     create_tables()  # Call this function before running the app
     port = int(os.environ.get('PORT', 5001))

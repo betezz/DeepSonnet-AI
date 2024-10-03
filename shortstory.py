@@ -85,5 +85,5 @@ def extract_themes(client, analysis):
     return [theme.strip() for theme in themes if theme.strip()]
 
 def format_analysis_result(result, analysis_type):
-    # You can customize this function to format the result as needed
+    # Return HTML-formatted result
     return f"<h4>{analysis_type.capitalize()} Analysis</h4><p>{result}</p>"

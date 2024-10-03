@@ -10,22 +10,276 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        /* Copy all styles from index.html, then update as needed */
-        /* ... (copy all styles from index.html) ... */
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f8f9fa;
+            color: #333;
+        }
+        .navbar {
+            background-color: #4a90e2;
+            box-shadow: 0 2px 4px rgba(0,0,0,.1);
+        }
+        .navbar-brand {
+            font-weight: 600;
+            color: #ffffff !important;
+        }
+        .nav-link {
+            color: #ffffff !important;
+            font-weight: 400;
+        }
+        .container {
+            max-width: 1000px;
+            margin-top: 30px;
+        }
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,.1);
+        }
+        .form-control {
+            border-radius: 10px;
+        }
+        .btn-primary {
+            background-color: #4a90e2;
+            border-color: #4a90e2;
+            border-radius: 10px;
+            padding: 10px 20px;
+            font-weight: 600;
+        }
+        .btn-primary:hover {
+            background-color: #3a7bc8;
+            border-color: #3a7bc8;
+        }
+        .feature-section {
+            margin-top: 50px;
+        }
+        .feature-icon {
+            font-size: 2rem;
+            color: #4a90e2;
+            margin-bottom: 15px;
+        }
+        .feature-item {
+            margin-bottom: 30px;
+        }
+        #analysis-container {
+            display: none;
+        }
+        .two-column {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .poem-column, .result-column {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+        #back-button {
+            display: none;
+            margin-bottom: 20px;
+        }
+        
+        /* Mobile Devices */
+        @media (max-width: 575.98px) {
+            /* Navbar adjustments */
+            .navbar-nav {
+                flex-direction: column;
+                align-items: center;
+            }
+            .navbar-brand {
+                margin-bottom: 15px;
+            }
+            /* Feature section adjustments */
+            .feature-section .row {
+                flex-direction: column;
+                align-items: center;
+            }
+            .feature-item {
+                text-align: center;
+                margin-bottom: 20px;
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            /* Form and buttons adjustments */
+            #story-form .form-group {
+                width: 100%;
+            }
+            .btn-primary, .btn-secondary, .btn-outline-light {
+                width: 100%;
+                margin-bottom: 10px;
+            }
+            /* Analysis container adjustments */
+            #analysis-container .col-md-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            /* Story visualization adjustments */
+            .story-line {
+                width: 100% !important;
+                margin-bottom: 5px;
+            }
+            /* Back button adjustments */
+            #back-button {
+                width: 100%;
+                margin-top: 20px;
+            }
+        }
 
-        /* Update specific styles for short story analysis */
+        /* Tablets */
+        @media (min-width: 576px) and (max-width: 767.98px) {
+            /* Feature section adjustments */
+            .feature-section .row {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-around;
+            }
+            .feature-item {
+                flex: 0 0 45%;
+                text-align: center;
+                margin-bottom: 20px;
+            }
+            /* Analysis container adjustments */
+            #analysis-container .col-md-6 {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+        }
+
+        /* Desktops */
+        @media (min-width: 768px) and (max-width: 991.98px) {
+            /* Feature section adjustments */
+            .feature-section .row {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .feature-item {
+                flex: 0 0 48%;
+                text-align: left;
+                margin-bottom: 20px;
+            }
+        }
+
+        /* Large Desktops */
+        @media (min-width: 992px) {
+            /* Feature section adjustments */
+            .feature-section .row {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .feature-item {
+                flex: 0 0 23%;
+                text-align: left;
+                margin-bottom: 20px;
+            }
+        }
+
+        /* Extra Large Desktops */
+        @media (min-width: 1200px) {
+            /* Feature section adjustments */
+            .feature-section .row {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+            .feature-item {
+                flex: 0 0 30%;
+                text-align: left;
+                margin-bottom: 20px;
+            }
+            /* Analysis container adjustments */
+            #analysis-container .col-md-6 {
+                flex: 0 0 48%;
+                max-width: 48%;
+            }
+        }
+
+        /* General Enhancements */
         .story-lines {
             display: flex;
             flex-wrap: wrap;
             gap: 5px;
         }
-
         .story-line {
             background-color: #ffffff00;
             color: #000000;
             text-align: left;
             border-radius: 5px;
             padding: 5px 0;
+        }
+        @media (max-width: 575.98px) {
+            .story-lines {
+                justify-content: center;
+            }
+        }
+        @media (min-width: 576px) {
+            .story-lines {
+                justify-content: flex-start;
+            }
+        }
+
+        /* Improved Dark Mode Styles */
+        body.dark-mode {
+            background-color: #121212;
+            color: #ffffff;
+        }
+        .dark-mode .navbar {
+            background-color: #1f1f1f;
+            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+        }
+        .dark-mode .card {
+            background-color: #1f1f1f;
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+            color: #ffffff;
+        }
+        .dark-mode .form-control {
+            background-color: #2c2c2c;
+            color: #ffffff;
+            border-color: #444444;
+        }
+        .dark-mode .btn-primary {
+            background-color: #3a7bc8;
+            border-color: #3a7bc8;
+        }
+        .dark-mode .btn-outline-light {
+            color: #ffffff;
+            border-color: #ffffff;
+        }
+        .dark-mode .feature-icon {
+            color: #3a7bc8;
+        }
+        .dark-mode #result, .dark-mode #analysis-highlights, .dark-mode #theme-cloud {
+            color: #ffffff;
+        }
+        .dark-mode .tooltip {
+            background-color: #2c2c2c;
+            color: #ffffff;
+            border-color: #444444;
+        }
+
+        /* Sentiment Meter Styles */
+        .sentiment-meter {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+        .sentiment-meter::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            background-color: #4caf50;
+            width: 0%;
+            transition: width 0.5s;
+        }
+        .dark-mode .sentiment-meter {
+            background-color: #444444;
+        }
+        .dark-mode .sentiment-meter::after {
+            background-color: #81c784;
         }
 
         #displayed-story-text {
@@ -36,9 +290,20 @@
             color: inherit;
             background-color: inherit;
         }
-
         .story-paragraph {
             margin-bottom: 10px;
+        }
+        .dark-mode .story-line {
+            background-color: inherit;
+        }
+
+        #loading {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
         }
     </style>
     <meta name="description" content="DeepSonnet AI - Free AI-powered short story analyzer. Uncover themes, sentiment, and style in your stories with advanced artificial intelligence analysis.">
@@ -58,15 +323,19 @@
                         <a class="nav-link" href="/">Poetry Analysis</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" href="/short_story">Short Story Analysis</a>
+                        <a class="nav-link" href="/short_story">Short Story Analysis</a>
                     </li>
                     <li class="nav-item" id="leaderboard-nav-item">
-                        <a class="nav-link" href="/leaderboard">Leaderboard</a>
+                        <a class="nav-link" href="{{ url_for('leaderboard') }}">Top Rated Poems</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#" id="dark-mode-toggle">
-                            <i class="fas fa-moon"></i>
-                        </a>
+                        <a class="nav-link" href="{{ url_for('about') }}">About</a>
+                    </li>
+                    <!-- Dark Mode Toggle -->
+                    <li class="nav-item ms-3">
+                        <button id="dark-mode-toggle" class="btn btn-outline-light">
+                            <i class="fas fa-moon"></i> Dark Mode
+                        </button>
                     </li>
                 </ul>
             </div>
@@ -128,7 +397,10 @@
             <div class="col-md-6 result-column">
                 <h3>DeepSonnet AI Analysis Result:</h3>
                 <div id="result" class="result"></div>
-                <div id="sentiment-container" class="mt-4"></div>
+                <div id="sentiment-container" class="mt-4">
+                    <h5>Sentiment Meter</h5>
+                    <div class="sentiment-meter"></div>
+                </div>
                 <div id="analysis-highlights" class="mt-4"></div>
                 <div id="theme-cloud" class="mt-4"></div>
             </div>
