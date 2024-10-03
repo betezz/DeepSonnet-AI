@@ -345,7 +345,7 @@
     <div class="container">
         <div class="card p-5 mb-5" id="main-content">
             <h1 class="text-center mb-4">DeepSonnet AI Short Story Analysis</h1>
-            <form id="shortstory-form">
+            <form id="shortstory-form" enctype="multipart/form-data">
                 <div class="form-group">
                     <label for="story_title">Story Title:</label>
                     <input type="text" id="story_title" name="story_title" class="form-control" value="Untitled">
@@ -367,6 +367,10 @@
                         <option value="plot">Plot Analysis</option>
                         <option value="general">General Analysis</option>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="story_file">Or upload a PDF file:</label>
+                    <input type="file" class="form-control-file" id="story_file" name="story_file" accept=".pdf">
                 </div>
                 <div class="form-group" style="height: 15px;"></div>
                 <button type="submit" class="btn btn-primary btn-lg btn-block">Analyze Short Story</button>

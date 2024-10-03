@@ -3,6 +3,7 @@ from flask import Flask, request, jsonify, render_template, redirect, url_for
 from random import choice
 import nltk
 from nltk.corpus import cmudict
+from werkzeug.utils import secure_filename
 import ssl
 from openai import OpenAI
 from example import initialize_openai_client, analyze_poem, calculate_poem_score
@@ -24,6 +25,17 @@ except AttributeError:
 # Initialize Flask app
 app = Flask(__name__)
 CORS(app)
+
+# Define the upload folder
+UPLOAD_FOLDER = 'uploads'
+ALLOWED_EXTENSIONS = {'pdf'}
+
+# Configure the upload folder
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+# Ensure the upload folder exists
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
 
 # Initialize database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///poems.db'
@@ -133,29 +145,37 @@ def analyze_poem_endpoint():
 @app.route('/analyze_shortstory', methods=['POST'])
 def analyze_shortstory_endpoint():
     try:
-        data = request.json
-        story_text = data.get('story_text')
-        story_title = data.get('story_title', 'Untitled')
-        analysis_type = data.get('analysis_type', 'general')
+        story_title = request.form.get('story_title', 'Untitled')
+        story_text = request.form.get('story_text', '')
+        analysis_type = request.form.get('analysis_type', 'general')
 
+        if 'story_file' in request.files:
+            file = request.files['story_file']
+            if file and allowed_file(file.filename):
+                filename = secure_filename(file.filename)
+                filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+                file.save(filepath)
+                story_text = extract_text_from_pdf(filepath)
+                os.remove(filepath)  # Remove the file after extraction
+            else:
+                return jsonify({'error': 'Invalid file type. Please upload a PDF.'}), 400
+            
         if story_text == "<test>":
-            story_title = "The Mysterious Stranger"
+            story_title = "The Rise of Malvern Prep"
             story_text = """
-            It was a dark and stormy night. The old mansion creaked and groaned as the wind howled through its halls. Suddenly, a figure appeared at the door. It was a stranger, tall and imposing, with piercing eyes that seemed to see right through you.
+            It was a crisp spring afternoon when Malvern Prep's lacrosse team faced off against their arch-rivals, Lawrenceville. The energy on the field was electric as the two teams clashed in a battle for supremacy.
 
-            "Who are you?" the homeowner asked, trying to hide the fear from his voice.
+            Malvern Prep's players, fueled by their determination to emerge victorious, dominated the game from the start. Their sticks moved in perfect sync, cradling and passing the ball with precision. The Lawrenceville defense was no match for Malvern's lightning-fast attacks, and the scoreboard reflected the Prep's superiority.
 
-            "I am the one you have been expecting," the stranger replied, his voice low and mysterious. "I have come to reveal a secret that has been hidden for centuries."
+            As the final whistle blew, the Malvern Prep team erupted in cheers, celebrating their hard-fought win. The players hugged each other, grinning from ear to ear, as their coaches beamed with pride. It was a moment that would be etched in the memories of the team and their fans forever.
 
-            The homeowner's curiosity was piqued. He invited the stranger in, and they sat down in the dimly lit study. The stranger began to speak, his words weaving a tale of ancient mysteries and hidden treasures.
+            The victory was not just about winning a game; it was about the culmination of months of hard work, dedication, and teamwork. It was a testament to the Prep's commitment to excellence, both on and off the field. As the team celebrated their triumph, they knew that this was just the beginning of their journey to greatness.
 
-            As the night wore on, the homeowner found himself entranced by the stranger's words. He felt like he was being drawn into a world beyond his wildest dreams.
-
-            But as the first light of dawn crept into the sky, the stranger vanished as suddenly as he appeared. The homeowner was left with more questions than answers, but he knew that his life would never be the same again.
+            The legacy of Malvern Prep's lacrosse team would live on, inspiring future generations to strive for excellence and push beyond their limits. The Prep's spirit, forged in the fire of competition, would continue to burn bright, guiding its students towards a brighter future.
             """
 
         result = analyze_shortstory(shortstory_client, story_text, story_title, analysis_type)
-        return jsonify({'result': result})  # Wrap result in a JSON object to fix error?
+        return jsonify({'result': result, 'story_text': story_text})
 
     except Exception as e:
         app.logger.error(f"Error in analyze_shortstory_endpoint: {str(e)}", exc_info=True)
@@ -190,16 +210,18 @@ def about():
     return render_template('about.html')
 
 # Function to extract text from PDF
-def extract_text_from_pdf(pdf_stream):
-    try:
-        pdf_reader = PyPDF2.PdfReader(pdf_stream)
-        text = ""
-        for page in pdf_reader.pages:
-            text += page.extract_text() + "\n"
-        return text
-    except Exception as e:
-        raise RuntimeError(f"Failed to extract text from PDF: {str(e)}")
+def extract_text_from_pdf(pdf_path):
+    with open(pdf_path, 'rb') as file:
+        reader = PyPDF2.PdfReader(file)
+        text = ''
+        for page in reader.pages:
+            text += page.extract_text() + '\n'
+    return text
 
+def allowed_file(filename):
+    ALLOWED_EXTENSIONS = {'pdf'}
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 # Add this function to create tables
 def create_tables():
     with app.app_context():

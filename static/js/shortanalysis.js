@@ -29,41 +29,39 @@ function analyzeShortStory() {
     let storyTitle = document.getElementById('story_title').value;
     let storyText = document.getElementById('story_text').value;
     let analysisType = document.getElementById('analysis_type').value;
+    let storyFile = document.getElementById('story_file').files[0];
 
-    // Show the loading spinner and hide everything else
+    // Show loading spinner and hide content
     document.getElementById('loading').style.display = 'flex';
     document.getElementById('main-content').style.display = 'none';
     document.getElementById('analysis-container').style.display = 'none';
     document.querySelector('.feature-section').style.display = 'none';
     document.getElementById('about-section').style.display = 'none';
 
-    // Clear previous result
-    document.getElementById('result').innerHTML = '';
+    let formData = new FormData();
+    formData.append('story_title', storyTitle);
+    formData.append('story_text', storyText);
+    formData.append('analysis_type', analysisType);
+    if (storyFile) {
+        formData.append('story_file', storyFile);
+    }
 
     fetch('/analyze_shortstory', {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            story_title: storyTitle,
-            story_text: storyText,
-            analysis_type: analysisType
-        })
+        body: formData
     })
     .then(response => response.json())
     .then(data => {
-        // Hide the loading spinner
+        // Hide loading spinner
         document.getElementById('loading').style.display = 'none';
 
-        // Show the analysis container
+        // Show analysis container
         document.getElementById('analysis-container').style.display = 'flex';
 
-        // Display the submitted short story on the left
+        // Display results
         document.getElementById('displayed-story-title').innerText = storyTitle || 'Untitled';
-        document.getElementById('displayed-story-text').innerText = storyText;
+        document.getElementById('displayed-story-text').innerText = data.story_text || storyText;
 
-        // Display the analysis result on the right
         if (data.result) {
             document.getElementById('result').innerHTML = data.result;
         } else if (data.error) {
