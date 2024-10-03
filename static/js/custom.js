@@ -1,4 +1,28 @@
 try {
+    // Add this near the top of your custom.js file, after the initial try block
+    const funFacts = [
+        "The word 'poem' comes from the Greek word 'poíēma' meaning 'a thing made'.",
+        "The world's shortest poem is a one-letter poem by Aram Saroyan, consisting of a four-legged version of the letter 'm'.",
+        "Edgar Allan Poe's 'The Raven' took him around 6 months to write.",
+        "The oldest surviving poem is the 'Sumerian King List', which dates back to around 2100 BCE.",
+        "The longest poem in the English language is 'The Faerie Queene' by Edmund Spenser, with over 36,000 lines.",
+        "The first known poet in recorded history is Enheduanna, a Sumerian high priestess from around 2285 BCE.",
+        "The word 'sonnet' comes from the Italian word 'sonetto', meaning 'little song'.",
+        "The first sonnet was written by Giacomo da Lentini in the 13th century.",
+        "The most translated poem in the world is 'The Rubaiyat of Omar Khayyam', with over 1,000 translations.",
+        "The first poetry slam was held in 1986 at the Green Mill Jazz Club in Chicago.",
+        "The oldest known poetry collection is the 'Rigveda', an ancient Indian Vedic Sanskrit collection from around 1500 BCE.",
+        "The first known poetry anthology is the 'Greek Anthology', compiled around 60 BCE.",
+        "The most famous poetry movement in the United States is the 'Beat Generation', which emerged in the 1950s."
+    ];
+
+    function displayRandomFunFact() {
+        const funFactElement = document.getElementById('fun-fact');
+        const randomIndex = Math.floor(Math.random() * funFacts.length);
+        const randomFact = funFacts[randomIndex];
+        funFactElement.textContent = "Fun Fact: " + randomFact;
+    }
+
     document.getElementById('poem-form').addEventListener('submit', function(event) {
         event.preventDefault();  // Prevent the form from submitting the traditional way
 
@@ -42,6 +66,9 @@ But we'll leave you flat on your back`;
         document.getElementById('analysis-container').style.display = 'none';
         document.querySelector('.feature-section').style.display = 'none';
         document.getElementById('about-section').style.display = 'none';
+
+        // Display a random fun fact
+        displayRandomFunFact();
 
         // Clear previous result
         document.getElementById('result').innerHTML = '';
@@ -290,11 +317,7 @@ But we'll leave you flat on your back`;
     function updateDarkModeButton(isDarkMode) {
         const toggleButton = document.getElementById('dark-mode-toggle');
         if (toggleButton) {
-            if (isDarkMode) {
-                toggleButton.innerHTML = '<i class="fas fa-sun"></i> Light Mode';
-            } else {
-                toggleButton.innerHTML = '<i class="fas fa-moon"></i> Dark Mode';
-            }
+            toggleButton.innerHTML = isDarkMode ? '<i class="fas fa-sun"></i> Light Mode' : '<i class="fas fa-moon"></i> Dark Mode';
         }
     }
 
@@ -302,8 +325,6 @@ But we'll leave you flat on your back`;
         const darkMode = localStorage.getItem('darkMode');
         if (darkMode === 'enabled') {
             document.body.classList.add('dark-mode');
-        } else {
-            document.body.classList.remove('dark-mode');
         }
         updateDarkModeButton(darkMode === 'enabled');
     }
@@ -311,14 +332,10 @@ But we'll leave you flat on your back`;
     // Apply dark mode when the DOM is loaded
     document.addEventListener('DOMContentLoaded', function() {
         applyDarkMode();
-
-        // Add event listener to dark mode toggle button if it exists
         const darkModeToggle = document.getElementById('dark-mode-toggle');
         if (darkModeToggle) {
             darkModeToggle.addEventListener('click', toggleDarkMode);
         }
-
-        // Rest of your DOMContentLoaded code...
     });
 
     /* Word and Character Counter Functionality */

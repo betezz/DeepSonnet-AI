@@ -220,27 +220,35 @@
 
         /* Improved Dark Mode Styles */
         body.dark-mode {
-            background-color: #121212;
-            color: #ffffff;
+            background-color: #333;
+            color: #f8f9fa;
         }
+        
         .dark-mode .navbar {
-            background-color: #1f1f1f;
-            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
+            background-color: #222;
         }
+        
         .dark-mode .card {
-            background-color: #1f1f1f;
-            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
-            color: #ffffff;
+            background-color: #444;
+            color: #f8f9fa;
         }
+        
         .dark-mode .form-control {
-            background-color: #2c2c2c;
-            color: #ffffff;
-            border-color: #444444;
+            background-color: #555;
+            color: #f8f9fa;
+            border-color: #777;
         }
+        
         .dark-mode .btn-primary {
-            background-color: #3a7bc8;
-            border-color: #3a7bc8;
+            background-color: #0056b3;
+            border-color: #004085;
         }
+        
+        .dark-mode .btn-primary:hover {
+            background-color: #003d80;
+            border-color: #002752;
+        }
+        
         .dark-mode .btn-outline-light {
             color: #ffffff;
             border-color: #ffffff;
@@ -325,9 +333,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/short_story">Short Story Analysis</a>
                     </li>
-                    <li class="nav-item" id="leaderboard-nav-item">
-                        <a class="nav-link" href="{{ url_for('leaderboard') }}">Top Rated Poems</a>
-                    </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('about') }}">About</a>
                     </li>
@@ -383,6 +388,7 @@
                     <span class="sr-only">Loading...</span>
                 </div>
                 <p class="mt-3">DeepSonnet AI is analyzing your short story, please wait...</p>
+                <p id="fun-fact" class="mt-3 font-weight-bold" style="font-size: 1.2rem;"></p>
             </div>
         </div>
 

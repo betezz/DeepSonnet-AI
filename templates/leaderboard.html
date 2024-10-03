@@ -64,13 +64,32 @@
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="{{ url_for('index') }}">DeepSonnet AI</a>
-            <ul class="navbar-nav ml-auto">
-                <li class="nav-item">
-                    <a class="nav-link btn btn-outline-light" href="{{ url_for('index') }}">
-                        <i class="fas fa-home"></i> Home
-                    </a>
-                </li>
-            </ul>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">Poetry Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/short_story">Short Story Analysis</a>
+                    </li>
+                    <li class="nav-item" id="leaderboard-nav-item">
+                        <a class="nav-link" href="{{ url_for('leaderboard') }}">Top Rated Poems</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about') }}">About</a>
+                    </li>
+                    <!-- Dark Mode Toggle -->
+                    <li class="nav-item ms-3">
+                        <button id="dark-mode-toggle" class="btn btn-outline-light">
+                            <i class="fas fa-moon"></i> Dark Mode
+                        </button>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 

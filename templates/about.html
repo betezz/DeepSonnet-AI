@@ -64,6 +64,36 @@
         .disclaimer:hover {
             opacity: 1;
         }
+        
+        body.dark-mode {
+            background-color: #333;
+            color: #f8f9fa;
+        }
+        
+        .dark-mode .navbar {
+            background-color: #222;
+        }
+        
+        .dark-mode .card {
+            background-color: #444;
+            color: #f8f9fa;
+        }
+        
+        .dark-mode .form-control {
+            background-color: #555;
+            color: #f8f9fa;
+            border-color: #777;
+        }
+        
+        .dark-mode .btn-primary {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        
+        .dark-mode .btn-primary:hover {
+            background-color: #003d80;
+            border-color: #002752;
+        }
     </style>
     <meta name="description" content="Discover DeepSonnet AI, the cutting-edge artificial intelligence tool for deep sonnet analysis and comprehensive poetry interpretation. Free AI-powered poem analyzer for students, teachers, and poetry enthusiasts.">
     <meta name="keywords" content="DeepSonnet AI, AI poetry analysis, deep sonnet analysis, poem analyzer, artificial intelligence poetry, free poetry tool">
@@ -72,7 +102,7 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
-            <a class="navbar-brand" href="/">DeepSonnet AI</a>
+            <a class="navbar-brand" href="{{ url_for('index') }}">DeepSonnet AI</a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
@@ -80,13 +110,13 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
-                        <a class="nav-link" href="/">Home</a>
-                    </li>
-                    <li class="nav-item active">
-                        <a class="nav-link" href="/about">About</a>
+                        <a class="nav-link" href="/">Poetry Analysis</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('leaderboard') }}">Top Rated Poems</a>
+                        <a class="nav-link" href="/short_story">Short Story Analysis</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('about') }}">About</a>
                     </li>
                     <!-- Dark Mode Toggle -->
                     <li class="nav-item ms-3">

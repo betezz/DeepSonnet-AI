@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>DeepSonnet AI - Free AI Poetry Analysis & Poem Analyzer</title>
     <link rel="icon" href="{{ url_for('static', filename='images/deepsonnet_favicon.ico') }}" type="image/x-icon">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <link rel="preload" href="{{ url_for('static', filename='css/bootstrap.min.css') }}" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}"></noscript>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
@@ -33,118 +34,80 @@
         .card {
             border: none;
             border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-            transition: all 0.3s ease;
-            background-color: #ffffff;
+            box-shadow: 0 10px 20px rgba(0,0,0,.1);
         }
-        .card:hover {
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        .form-control {
+            border-radius: 10px;
         }
         .btn-primary {
             background-color: #4a90e2;
             border-color: #4a90e2;
-            transition: all 0.3s ease;
+            border-radius: 10px;
+            padding: 10px 20px;
             font-weight: 600;
         }
         .btn-primary:hover {
             background-color: #3a7bc8;
             border-color: #3a7bc8;
         }
-        .form-control {
-            border-radius: 10px;
-        }
-        .poem-column, .result-column {
-            height: 600px;
-            overflow-y: auto;
-            background-color: #ffffff;
-            padding: 20px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,.05);
-        }
-        #sentiment-container {
-            width: 100%;
-            background-color: #f0f0f0;
-            border-radius: 10px;
-            margin-top: 10px;
-            overflow: hidden;
-        }
-        #sentiment-bar {
-            height: 20px;
-            background-color: #4CAF50;
-            border-radius: 10px;
-            transition: width 0.5s ease-in-out;
-        }
         .feature-section {
             margin-top: 50px;
-            padding: 30px;
-            background-color: #ffffff;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,.05);
         }
         .feature-icon {
-            font-size: 2em;
-            margin-right: 15px;
+            font-size: 2rem;
             color: #4a90e2;
+            margin-bottom: 15px;
         }
         .feature-item {
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
-        #about-section {
-            background-color: #ffffff;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0,0,0,.05);
+        #analysis-container {
+            display: none;
         }
-        /* Responsive Design Enhancements */
-
-        /* Mobile Devices (portrait and landscape) */
+        .two-column {
+            display: flex;
+            flex-wrap: wrap;
+        }
+        .poem-column, .result-column {
+            flex: 1;
+            min-width: 300px;
+            padding: 20px;
+        }
+        #back-button {
+            display: none;
+            margin-bottom: 20px;
+        }
+        
+        /* Mobile Devices */
         @media (max-width: 575.98px) {
-            /* Navbar adjustments */
             .navbar-nav {
                 flex-direction: column;
                 align-items: center;
             }
-
             .navbar-brand {
                 margin-bottom: 15px;
             }
-
-            /* Feature section adjustments */
             .feature-section .row {
                 flex-direction: column;
                 align-items: center;
             }
-
             .feature-item {
                 text-align: center;
                 margin-bottom: 20px;
                 flex: 0 0 100%;
                 max-width: 100%;
             }
-
-            /* Form and buttons adjustments */
             #poem-form .form-group {
                 width: 100%;
             }
-
             .btn-primary, .btn-secondary, .btn-outline-light {
                 width: 100%;
                 margin-bottom: 10px;
             }
-
-            /* Analysis container adjustments */
             #analysis-container .col-md-6 {
                 flex: 0 0 100%;
                 max-width: 100%;
             }
-
-            /* Poem visualization adjustments */
-            .poem-line {
-                width: 100% !important;
-                margin-bottom: 5px;
-            }
-
-            /* Back button adjustments */
             #back-button {
                 width: 100%;
                 margin-top: 20px;
@@ -153,256 +116,85 @@
 
         /* Tablets */
         @media (min-width: 576px) and (max-width: 767.98px) {
-            /* Feature section adjustments */
             .feature-section .row {
                 flex-direction: row;
                 flex-wrap: wrap;
                 justify-content: space-around;
             }
-
             .feature-item {
                 flex: 0 0 45%;
-                text-align: left;
+                text-align: center;
                 margin-bottom: 20px;
             }
-
-            /* Analysis container adjustments */
             #analysis-container .col-md-6 {
-                flex: 0 0 48%;
-                max-width: 48%;
-            }
-
-            /* Button width adjustments */
-            .btn-primary, .btn-secondary, .btn-outline-light {
-                width: auto;
-                margin-bottom: 0;
+                flex: 0 0 100%;
+                max-width: 100%;
             }
         }
 
         /* Desktops */
-        @media (min-width: 768px) {
-            /* Feature section adjustments */
+        @media (min-width: 768px) and (max-width: 991.98px) {
             .feature-section .row {
                 flex-direction: row;
                 flex-wrap: wrap;
                 justify-content: space-between;
             }
-
             .feature-item {
-                flex: 0 0 45%;
+                flex: 0 0 48%;
                 text-align: left;
                 margin-bottom: 20px;
-            }
-
-            /* Analysis container adjustments */
-            #analysis-container .col-md-6 {
-                flex: 0 0 48%;
-                max-width: 48%;
-            }
-
-            /* Button width adjustments */
-            .btn-primary, .btn-secondary, .btn-outline-light {
-                width: auto;
             }
         }
 
         /* Large Desktops */
         @media (min-width: 992px) {
-            /* Feature section adjustments */
             .feature-section .row {
                 flex-direction: row;
                 flex-wrap: wrap;
                 justify-content: space-between;
             }
-
             .feature-item {
-                flex: 0 0 30%;
+                flex: 0 0 23%;
                 text-align: left;
                 margin-bottom: 20px;
-            }
-
-            /* Analysis container adjustments */
-            #analysis-container .col-md-6 {
-                flex: 0 0 48%;
-                max-width: 48%;
             }
         }
 
         /* Extra Large Desktops */
         @media (min-width: 1200px) {
-            /* Feature section adjustments */
             .feature-section .row {
                 flex-direction: row;
                 flex-wrap: wrap;
                 justify-content: space-between;
             }
-
             .feature-item {
                 flex: 0 0 30%;
                 text-align: left;
                 margin-bottom: 20px;
             }
-
-            /* Analysis container adjustments */
             #analysis-container .col-md-6 {
                 flex: 0 0 48%;
                 max-width: 48%;
             }
         }
 
-        /* General Enhancements */
-        .poem-lines {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 5px;
-        }
-
-        .poem-line {
-            background-color: #ffffff00;
-            color: #000000;
-            text-align: left;
-            border-radius: 5px;
-            padding: 5px 0;
-        }
-
-        @media (max-width: 575.98px) {
-            .poem-lines {
-                justify-content: center;
-            }
-        }
-
-        @media (min-width: 576px) {
-            .poem-lines {
-                justify-content: flex-start;
-            }
-        }
-
-        /* Improved Dark Mode Styles */
-        body.dark-mode {
-            background-color: #121212;
-            color: #ffffff;
-        }
-
-        .dark-mode .navbar {
-            background-color: #1f1f1f;
-            box-shadow: 0 2px 4px rgba(255, 255, 255, 0.1);
-        }
-
-        .dark-mode .card {
-            background-color: #1f1f1f;
-            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
-            color: #ffffff;
-        }
-
-        .dark-mode .form-control {
-            background-color: #2c2c2c;
-            color: #ffffff;
-            border-color: #444444;
-        }
-
-        .dark-mode .btn-primary {
-            background-color: #3a7bc8;
-            border-color: #3a7bc8;
-        }
-
-        .dark-mode .btn-outline-light {
-            color: #ffffff;
-            border-color: #ffffff;
-        }
-
-        .dark-mode .btn-outline-light:hover {
-            background-color: #ffffff;
-            color: #121212;
-        }
-
-        .dark-mode .feature-section,
-        .dark-mode #about-section {
-            background-color: #1f1f1f;
-            color: #ffffff;
-        }
-
-        .dark-mode .feature-icon {
-            color: #3a7bc8;
-        }
-
-        .dark-mode #word-char-counter {
-            color: #a0a0a0;
-        }
-
-        .dark-mode .poem-column,
-        .dark-mode .result-column {
-            background-color: #1f1f1f;
-            color: #ffffff;
-        }
-
-        .dark-mode #sentiment-container {
-            background-color: #2c2c2c;
-        }
-
-        .dark-mode .poem-line {
-            background-color: #3a7bc8;
-        }
-
-        .dark-mode .text-muted {
-            color: #a0a0a0 !important;
-        }
-
-        .dark-mode .btn-secondary {
-            background-color: #444444;
-            border-color: #444444;
-            color: #ffffff;
-        }
-
-        .dark-mode .btn-secondary:hover {
-            background-color: #555555;
-            border-color: #555555;
-        }
-
-        .dark-mode .btn-info {
-            background-color: #17a2b8;
-            border-color: #17a2b8;
-            color: #ffffff;
-        }
-
-        .dark-mode .btn-info:hover {
-            background-color: #138496;
-            border-color: #138496;
-        }
-
-        .dark-mode ::placeholder {
-            color: #a0a0a0;
-        }
-
-        /* Adjust other elements as needed for dark mode */
-
-        .word {
-            cursor: pointer;
+        /* Sentiment Meter Styles */
+        .sentiment-meter {
+            height: 20px;
+            background-color: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
             position: relative;
         }
-
-        .alliteration { color: blue; }
-        .assonance { color: red; }
-
-        .tooltip {
+        .sentiment-meter::after {
+            content: '';
             position: absolute;
-            background: white;
-            border: 1px solid #ccc;
-            padding: 5px;
-            border-radius: 3px;
-            font-size: 12px;
-            z-index: 100;
-            top: 100%;
+            top: 0;
             left: 0;
-            white-space: nowrap;
-        }
-
-        #legend {
-            margin-top: 20px;
-            font-size: 14px;
-        }
-
-        #legend span {
-            margin-right: 15px;
+            height: 100%;
+            background-color: #4caf50;
+            width: 0%;
+            transition: width 0.5s;
         }
 
         #displayed-poem-text {
@@ -414,34 +206,50 @@
             background-color: inherit;
         }
 
-        .poem-line {
-            margin-bottom: 10px;
-        }
-
-        /* Remove any background colors or additional styling for poem lines */
-        .dark-mode .poem-line {
-            background-color: inherit;
-        }
-
         #loading {
             display: none;
-            position: fixed; /* Added to position it relative to the viewport */
-            top: 50%; /* Center vertically */
-            left: 50%; /* Center horizontally */
-            transform: translate(-50%, -50%); /* Adjust position to truly center */
-            z-index: 1000; /* Ensure it appears above other content */
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 1000;
         }
 
-        .disclaimer {
-            font-size: 0.8rem;
-            opacity: 0.7;
+        body.dark-mode {
+            background-color: #333;
+            color: #f8f9fa;
         }
-        .disclaimer:hover {
-            opacity: 1;
+        
+        .dark-mode .navbar {
+            background-color: #222;
+        }
+        
+        .dark-mode .card {
+            background-color: #444;
+            color: #f8f9fa;
+        }
+        
+        .dark-mode .form-control {
+            background-color: #555;
+            color: #f8f9fa;
+            border-color: #777;
+        }
+        
+        .dark-mode .btn-primary {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+        
+        .dark-mode .btn-primary:hover {
+            background-color: #003d80;
+            border-color: #002752;
         }
     </style>
     <meta name="description" content="DeepSonnet AI - Free AI-powered poem analyzer. Uncover themes, sentiment, and style in your poetry with advanced artificial intelligence analysis.">
     <meta name="keywords" content="DeepSonnet, AI Poetry Analysis, Poem Analyzer Free, Deep Sonnet AI, poetry analysis, artificial intelligence">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 </head>
 <body>
     <nav class="navbar navbar-expand-lg navbar-dark">
@@ -458,9 +266,6 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="/short_story">Short Story Analysis</a>
-                    </li>
-                    <li class="nav-item" id="leaderboard-nav-item">
-                        <a class="nav-link" href="{{ url_for('leaderboard') }}">Top Rated Poems</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('about') }}">About</a>
@@ -487,7 +292,6 @@
                 <div class="form-group">
                     <label for="poem_text">Poem Text:</label>
                     <textarea id="poem_text" name="poem_text" rows="10" class="form-control"></textarea>
-                    <!-- Word and Character Counter -->
                     <div id="word-char-counter" class="mt-2 text-end text-muted">
                         Words: 0 | Characters: 0
                     </div>
@@ -509,16 +313,13 @@
             </form>
         </div>
 
-        <div class="disclaimer text-muted small mt-4 text-center">
-            <p>DeepSonnet AI is an educational tool designed to enhance understanding of poetry and literature. Users are responsible for ensuring appropriate and ethical use in academic contexts.</p>
-        </div>
-
         <div id="loading" style="display: none;">
             <div class="loading-content text-center">
                 <div class="spinner-border text-primary" role="status" style="width: 3rem; height: 3rem;">
                     <span class="sr-only">Loading...</span>
                 </div>
                 <p class="mt-3">DeepSonnet AI is analyzing your poem, please wait...</p>
+                <p id="fun-fact" class="mt-3 font-weight-bold" style="font-size: 1.2rem;"></p>
             </div>
         </div>
 
@@ -537,14 +338,17 @@
             <div class="col-md-6 result-column">
                 <h3>DeepSonnet AI Analysis Result:</h3>
                 <div id="result" class="result"></div>
-                <div id="sentiment-container" class="mt-4"></div>
+                <div id="sentiment-container" class="mt-4">
+                    <h5>Sentiment Meter</h5>
+                    <div class="sentiment-meter"></div>
+                </div>
                 <div id="analysis-highlights" class="mt-4"></div>
                 <div id="theme-cloud" class="mt-4"></div>
             </div>
         </div>
 
         <div class="feature-section">
-            <h2 class="text-center mb-4">Why Choose DeepSonnet AI?</h2>
+            <h2 class="text-center mb-4">Why Choose DeepSonnet AI for Poetry Analysis?</h2>
             <div class="row">
                 <div class="col-md-6 feature-item">
                     <i class="fas fa-robot feature-icon"></i>
@@ -556,7 +360,7 @@
                 </div>
                 <div class="col-md-6 feature-item">
                     <i class="fas fa-chart-bar feature-icon"></i>
-                    <strong>Multiple Analysis Types:</strong> Explore sentiment, themes, style, and more.
+                    <strong>Multiple Analysis Types:</strong> Explore sentiment, themes, style, rhyme, and meter.
                 </div>
                 <div class="col-md-6 feature-item">
                     <i class="fas fa-lock feature-icon"></i>
@@ -566,16 +370,20 @@
         </div>
 
         <section class="mt-5 mb-5" id="about-section">
-            <h2>About DeepSonnet AI</h2>
-            <p>DeepSonnet AI is a cutting-edge artificial intelligence tool designed to analyze poems. Our advanced algorithms can detect sentiment, identify themes, recognize poetic styles, and much more.</p>
+            <h2>About DeepSonnet AI Poetry Analysis</h2>
+            <p>DeepSonnet AI is a cutting-edge artificial intelligence tool designed to analyze poems. Our advanced algorithms can detect sentiment, identify themes, recognize poetic styles, analyze rhyme and meter, and much more.</p>
             <a href="{{ url_for('about') }}" class="btn btn-info">Learn More About DeepSonnet AI</a>
         </section>
+
+        <!-- Add this just before the closing </div> of the main container -->
+        <div class="disclaimer text-muted small mt-4 text-center">
+            <p>DeepSonnet AI is an educational tool designed to enhance understanding of poetry and literature. Users are responsible for ensuring appropriate and ethical use in academic contexts.</p>
+        </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/popper.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="{{ url_for('static', filename='js/custom.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/jquery.min.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/custom.js') }}" defer></script>
+    <script src="https://d3js.org/d3.v7.min.js" defer></script>
 </body>
 </html>
