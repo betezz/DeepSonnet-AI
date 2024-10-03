@@ -431,6 +431,14 @@
             transform: translate(-50%, -50%); /* Adjust position to truly center */
             z-index: 1000; /* Ensure it appears above other content */
         }
+
+        .disclaimer {
+            font-size: 0.8rem;
+            opacity: 0.7;
+        }
+        .disclaimer:hover {
+            opacity: 1;
+        }
     </style>
     <meta name="description" content="DeepSonnet AI - Free AI-powered poem analyzer. Uncover themes, sentiment, and style in your poetry with advanced artificial intelligence analysis.">
     <meta name="keywords" content="DeepSonnet, AI Poetry Analysis, Poem Analyzer Free, Deep Sonnet AI, poetry analysis, artificial intelligence">
@@ -499,6 +507,10 @@
                 <div class="form-group" style="height: 15px;"></div>
                 <button type="submit" class="btn btn-primary btn-lg btn-block">Analyze Poem</button>
             </form>
+        </div>
+
+        <div class="disclaimer text-muted small mt-4 text-center">
+            <p>DeepSonnet AI is an educational tool designed to enhance understanding of poetry and literature. Users are responsible for ensuring appropriate and ethical use in academic contexts.</p>
         </div>
 
         <div id="loading" style="display: none;">
