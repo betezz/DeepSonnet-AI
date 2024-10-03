@@ -138,8 +138,24 @@ def analyze_shortstory_endpoint():
         story_title = data.get('story_title', 'Untitled')
         analysis_type = data.get('analysis_type', 'general')
 
+        if story_text == "<test>":
+            story_title = "The Mysterious Stranger"
+            story_text = """
+            It was a dark and stormy night. The old mansion creaked and groaned as the wind howled through its halls. Suddenly, a figure appeared at the door. It was a stranger, tall and imposing, with piercing eyes that seemed to see right through you.
+
+            "Who are you?" the homeowner asked, trying to hide the fear from his voice.
+
+            "I am the one you have been expecting," the stranger replied, his voice low and mysterious. "I have come to reveal a secret that has been hidden for centuries."
+
+            The homeowner's curiosity was piqued. He invited the stranger in, and they sat down in the dimly lit study. The stranger began to speak, his words weaving a tale of ancient mysteries and hidden treasures.
+
+            As the night wore on, the homeowner found himself entranced by the stranger's words. He felt like he was being drawn into a world beyond his wildest dreams.
+
+            But as the first light of dawn crept into the sky, the stranger vanished as suddenly as he appeared. The homeowner was left with more questions than answers, but he knew that his life would never be the same again.
+            """
+
         result = analyze_shortstory(shortstory_client, story_text, story_title, analysis_type)
-        return jsonify({'result': result})  # Wrap result in a JSON object
+        return jsonify({'result': result})  # Wrap result in a JSON object to fix error?
 
     except Exception as e:
         app.logger.error(f"Error in analyze_shortstory_endpoint: {str(e)}", exc_info=True)
