@@ -3,6 +3,7 @@ from openai import OpenAI
 from dotenv import load_dotenv
 import concurrent.futures
 import re
+import tiktoken
 
 load_dotenv()
 api_key = os.getenv('OPENAI_API_KEY')
@@ -11,6 +12,16 @@ def initialize_openai_client():
     return OpenAI(api_key=api_key)
 
 def analyze_shortstory(client, story_text, story_title, analysis_type):
+    # Add this block at the beginning of the function
+    max_tokens = 7500  # Set a safe limit below the 8192 maximum
+    encoding = tiktoken.encoding_for_model("gpt-4o-mini")
+    token_count = len(encoding.encode(story_text))
+
+    if token_count > max_tokens:
+        return {
+            'error': f"The submitted text is too long ({token_count} tokens). Please reduce it to approximately {max_tokens} tokens or less."
+        }
+
     prompts = {
         "sentiment": "Analyze the sentiment of the following short story. Provide a detailed explanation of the overall mood and emotional tone, supported by specific examples from the text.",
         "themes": "Identify and analyze the main themes in the following short story. Explain how these themes are developed throughout the narrative.",
@@ -47,7 +58,7 @@ def analyze_shortstory(client, story_text, story_title, analysis_type):
 
     except Exception as e:
         print(f"Error in API call for short story analysis: {str(e)}")
-        raise RuntimeError(f"An error occurred while analyzing the short story: {str(e)}")
+        return {'error': "An error occurred while analyzing the short story. Please try again with a shorter text."}
 
     return format_analysis_result(result, analysis_type)
 
@@ -58,7 +69,7 @@ def analyze_sentiment(client, text):
         {"role": "user", "content": text}
     ]
     completion = client.chat.completions.create(
-        model="gpt-4-0613",
+        model="gpt-4o-mini",
         messages=messages,
         temperature=0.7,
         max_tokens=10

@@ -14,6 +14,7 @@ from sqlalchemy import func
 from concurrent.futures import ThreadPoolExecutor
 import PyPDF2
 import io
+import markdown2
 
 # Ensure NLTK resources are downloaded (e.g., for Sentiment Analysis)
 try:
@@ -175,7 +176,11 @@ def analyze_shortstory_endpoint():
             """
 
         result = analyze_shortstory(shortstory_client, story_text, story_title, analysis_type)
-        return jsonify({'result': result, 'story_text': story_text})
+        
+        # Convert the result to markdown
+        markdown_result = markdown2.markdown(result)
+        
+        return jsonify({'result': markdown_result, 'story_text': story_text})
 
     except Exception as e:
         app.logger.error(f"Error in analyze_shortstory_endpoint: {str(e)}", exc_info=True)

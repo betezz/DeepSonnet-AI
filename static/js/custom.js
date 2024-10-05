@@ -99,11 +99,14 @@ But we'll leave you flat on your back`;
 
             // Display the submitted poem on the left
             document.getElementById('displayed-poem-title').innerText = poemTitle || 'Untitled';
-            document.getElementById('displayed-poem-text').innerText = poemText;
+            document.getElementById('displayed-poem-text').innerHTML = formatPoemText(poemText);
 
             // Display the analysis result on the right
             if (data.result) {
-                document.getElementById('result').innerHTML = `<p>${data.result}</p>`;
+                // Convert markdown to HTML
+                const converter = new showdown.Converter();
+                const htmlResult = converter.makeHtml(data.result);
+                document.getElementById('result').innerHTML = htmlResult;
             } else if (data.error) {
                 document.getElementById('result').innerHTML = `<h3 class="text-danger">Error:</h3><p>${data.error}</p>`;
             }
@@ -204,7 +207,7 @@ But we'll leave you flat on your back`;
     });
 
     function visualizePoemStructure() {
-        const poemText = document.getElementById('displayed-poem-text').textContent;
+        const poemText = document.getElementById('displayed-poem-text').innerText;
         const lines = poemText.split('\n');
         let visualization = '';
 
@@ -440,6 +443,12 @@ But we'll leave you flat on your back`;
             themeSpan.innerText = theme;
             themeCloud.appendChild(themeSpan);
         });
+    }
+
+    // Add this function to format poem text
+    function formatPoemText(text) {
+        const lines = text.split('\n');
+        return lines.map(line => `<p class="poem-line">${line.trim()}</p>`).join('');
     }
 } catch (error) {
     console.error("An error occurred in the JavaScript:", error);

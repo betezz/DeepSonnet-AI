@@ -58,12 +58,15 @@ function analyzeShortStory() {
         // Show analysis container
         document.getElementById('analysis-container').style.display = 'flex';
 
-        // Display results
+        // Update the story display function
         document.getElementById('displayed-story-title').innerText = storyTitle || 'Untitled';
-        document.getElementById('displayed-story-text').innerText = data.story_text || storyText;
+        document.getElementById('displayed-story-text').innerHTML = formatStoryText(data.story_text || storyText);
 
         if (data.result) {
-            document.getElementById('result').innerHTML = data.result;
+            // Convert markdown to HTML
+            const converter = new showdown.Converter();
+            const htmlResult = converter.makeHtml(data.result);
+            document.getElementById('result').innerHTML = htmlResult;
         } else if (data.error) {
             document.getElementById('result').innerHTML = `<h3 class="text-danger">Error:</h3><p>${data.error}</p>`;
         }
@@ -219,3 +222,9 @@ document.addEventListener('DOMContentLoaded', function() {
         darkModeToggle.addEventListener('click', toggleDarkMode);
     }
 });
+
+// Update the formatStoryText function
+function formatStoryText(text) {
+    const paragraphs = text.split('\n\n');
+    return paragraphs.map(p => `<p class="story-paragraph">${p.trim()}</p>`).join('');
+}
