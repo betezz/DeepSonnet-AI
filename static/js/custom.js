@@ -365,6 +365,18 @@ But we'll leave you flat on your back`;
 
     function displayAnalysisResult(data) {
         console.log("Analysis data:", data);
+        if (data.result) {
+            // Check if showdown is defined
+            if (typeof showdown !== 'undefined') {
+                const converter = new showdown.Converter();
+                const htmlResult = converter.makeHtml(data.result);
+                document.getElementById('result').innerHTML = htmlResult;
+            } else {
+                // Fallback if showdown is not available
+                document.getElementById('result').innerHTML = `<p>${data.result}</p>`;
+            }
+        }
+
         if (data.word_details) {
             const poemDisplay = document.getElementById('displayed-poem-text');
             const lines = poemDisplay.innerText.split('\n');
