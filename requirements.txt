@@ -7,3 +7,4 @@ python-dotenv==1.0.1
 gunicorn==23.0.0
 PyPDF2==3.0.1
 markdown2==2.5.0
+tiktoken==0.8.0
