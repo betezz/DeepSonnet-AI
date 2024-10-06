@@ -216,10 +216,9 @@ But we'll leave you flat on your back`;
             visualization += `<div class="poem-line" style="width: ${lineLength * 5}px;">${index + 1}</div>`;
         });
 
-        document.getElementById('poem-visualization').innerHTML = `
-            <h5>Poem Structure</h5>
-            <div class="poem-lines">${visualization}</div>
-        `;
+        // Temporarily not displaying the poem structure visualization
+        // This section will be updated in future iterations
+        document.getElementById('poem-visualization').innerHTML = '';
     }
 
     function displayThemeCloud(result) {
