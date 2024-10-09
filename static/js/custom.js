@@ -367,7 +367,15 @@ But we'll leave you flat on your back`;
         if (data.result) {
             // Check if showdown is defined
             if (typeof showdown !== 'undefined') {
-                const converter = new showdown.Converter();
+                const converter = new showdown.Converter({
+                    headerLevelStart: 3,  // Start headers at h3
+                    simplifiedAutoLink: true,
+                    strikethrough: true,
+                    tables: true,
+                    tasklists: true,
+                    simpleLineBreaks: true,
+                    requireSpaceBeforeHeadingText: true
+                });
                 const htmlResult = converter.makeHtml(data.result);
                 document.getElementById('result').innerHTML = htmlResult;
             } else {
@@ -379,17 +387,21 @@ But we'll leave you flat on your back`;
         if (data.word_details) {
             const poemDisplay = document.getElementById('displayed-poem-text');
             const lines = poemDisplay.innerText.split('\n');
-            poemDisplay.innerHTML = lines.map(line => {
+            poemDisplay.innerHTML = lines.map((line, index) => {
+                if (line.trim() === '') {
+                    // Preserve empty lines (stanza breaks)
+                    return '<div class="stanza-break"></div>';
+                }
                 const words = line.split(' ');
                 const formattedWords = words.map(word => {
                     const details = data.word_details[word.toLowerCase()] || { poetic_device: 'none' };
                     if (details.poetic_device !== 'none') {
                         return `<span class="word ${details.poetic_device}">${word}</span>`;
                     }
-                    return word; // Return the word without wrapping if no poetic device
+                    return word;
                 }).join(' ');
                 return `<div class="poem-line">${formattedWords}</div>`;
-            }).join('\n');
+            }).join('');
 
             // Add event listeners for hover
             poemDisplay.querySelectorAll('.word').forEach(wordSpan => {
@@ -459,7 +471,12 @@ But we'll leave you flat on your back`;
     // Add this function to format poem text
     function formatPoemText(text) {
         const lines = text.split('\n');
-        return lines.map(line => `<p class="poem-line">${line.trim()}</p>`).join('');
+        return lines.map(line => {
+            if (line.trim() === '') {
+                return '<div class="stanza-break"></div>';
+            }
+            return `<div class="poem-line">${line.trim()}</div>`;
+        }).join('');
     }
 } catch (error) {
     console.error("An error occurred in the JavaScript:", error);
